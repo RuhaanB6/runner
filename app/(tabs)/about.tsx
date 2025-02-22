@@ -1,16 +1,14 @@
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTheme } from '../lib/theme/ThemeContext';
+import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '../lib/theme/useTheme';
 
 export default function AboutScreen() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, ThemedButton } = useTheme();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>About screen</Text>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Text style={[styles.text, { color: theme.text }]}>About Screen</Text>
 
-      <TouchableOpacity onPress={toggleTheme} style={styles.button}>
-        <Text style={styles.buttonText}>Toggle Theme</Text>
-      </TouchableOpacity>
+      <ThemedButton title="Toggle Theme" onPress={() => {}} />
     </View>
   );
 }
@@ -24,15 +22,5 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#ffd33d',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#000',
-    fontSize: 16,
   },
 });
