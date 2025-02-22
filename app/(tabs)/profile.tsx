@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Butt
 import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
 
 // Import the image from the assets folder
-import ProfileImage from '../../assets/images/react-logo.png'; // Adjust the path as needed
+import ProfileImage from '../../assets/images/profile.png'; // Adjust the path as needed
 import CoinIcon from '../../assets/images/react-logo.png'; // Adjust the path as needed
 
 // Defining a few global variables to store the modifiable profile elements
