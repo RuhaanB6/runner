@@ -4,8 +4,20 @@ import { MaterialIcons } from '@expo/vector-icons'; // Ensure this package is in
 import Map from '@/components/Map'; // Adjust the path if needed
 import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
 import Slider from "@react-native-community/slider" // Adding the community package for the slider
+  // Inside your app's entry file or a custom script:
+  import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Index(): JSX.Element {
+
+const clearSpecificData = async () => {
+  await AsyncStorage.removeItem('points');
+  await AsyncStorage.removeItem('purchased_theme_1');
+  await AsyncStorage.removeItem('purchased_theme_2');
+  console.log('Specific AsyncStorage items removed!');
+};
+
+clearSpecificData();
+
   
   // State for sliderState
   const [sliderState, setSliderState] = React.useState<number>(0);
