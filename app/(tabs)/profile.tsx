@@ -61,13 +61,11 @@ const getLastName = async () => {
   catch (e) {
     console.error("Error caught", e);
   }
+
 };
 getUsername();
 getFirstName();
 getLastName();
-console.log('username: ' + username_var);
-console.log("first name: " + first_name_var);
-console.log("last name: " + last_name_var);
 
 if (username_var.length == 0) {
   username_var = "Username";
@@ -109,10 +107,10 @@ const ProfileScreen = () => {
       username_var = "Username";
     }
     if (first_name_var.length == 0) {
-      username_var = "First";
+      first_name_var = "First";
     }
     if (last_name_var.length == 0) {
-      username_var = "Last";
+      last_name_var = "Last";
     }
     storeData("username", username_var);
     storeData("firstName", first_name_var);
@@ -215,7 +213,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 75, // Adjust as needed
+    paddingTop: 110, // Adjust as needed
   },
   imageContainer: {
     width: 150,
