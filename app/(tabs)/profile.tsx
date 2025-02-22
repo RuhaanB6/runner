@@ -8,9 +8,19 @@ import CoinIcon from '../../assets/images/react-logo.png'; // Adjust the path as
 // Defining a few global variables to store the modifiable profile elements
 // TODO: Make a file which stores all these 3 points of data and populate them with that field
 let username_var: string = "Username";
-let first_name_var: string = "First Name";
-let last_name_var: string = "Last Name";
+let first_name_var: string = "First";
+let last_name_var: string = "Last";
 let points: number = 0;
+
+if (username_var.length == 0) {
+  username_var = "Username";
+}
+if (first_name_var.length == 0) {
+  username_var = "First";
+}
+if (last_name_var.length == 0) {
+  username_var = "Last";
+}
 
 const ProfileScreen = () => {
   // State for the modal visibility
@@ -37,6 +47,15 @@ const ProfileScreen = () => {
     username_var = username;
     first_name_var = firstName;
     last_name_var = lastName;
+    if (username_var.length == 0) {
+      username_var = "Username";
+    }
+    if (first_name_var.length == 0) {
+      username_var = "First";
+    }
+    if (last_name_var.length == 0) {
+      username_var = "Last";
+    }
     closeModal(); // Close the modal after saving
   };
 
@@ -89,25 +108,28 @@ const ProfileScreen = () => {
             {/* Username Input */}
             <TextInput
               style={styles.input}
-              placeholder="Username"
+              placeholder={username_var}
               value={username}
               onChangeText={setUsername}
+              clearTextOnFocus={true}
             />
 
             {/* First Name Input */}
             <TextInput
               style={styles.input}
-              placeholder="First Name"
+              placeholder={first_name_var}
               value={firstName}
               onChangeText={setFirstName}
+              clearTextOnFocus={true}
             />
 
             {/* Last Name Input */}
             <TextInput
               style={styles.input}
-              placeholder="Last Name"
+              placeholder={last_name_var}
               value={lastName}
               onChangeText={setLastName}
+              clearTextOnFocus={true}
             />
 
             {/* Save Button */}
