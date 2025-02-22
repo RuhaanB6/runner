@@ -168,5 +168,5 @@ const styles = StyleSheet.create({
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 
   // This is the style-sheet for the inside of the confirm route view
-  small_map: { width: "90%", height: "90%", alignSelf: 'center', paddingTop: 20} 
+  small_map: { width: "90%", height: "98%", alignSelf: 'center', paddingTop: 20} 
 });

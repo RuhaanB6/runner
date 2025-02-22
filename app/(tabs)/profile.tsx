@@ -148,7 +148,7 @@ const ProfileScreen = () => {
         style={[styles.themeButton, { backgroundColor: theme.buttonBackground }]}
         onPress={openModal}
         >
-        <Text style={[styles.themeButtonText, { color: theme.buttonText }]}>Update Profile</Text>
+        <Text style={[styles.themeButtonText, { color: theme.buttonText, fontWeight: 'bold' }]}>Update Profile</Text>
         </TouchableOpacity>
 
       {/* Modal for Changing Profile */}
@@ -222,11 +222,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: 'Avenir',
     marginBottom: 25,
+    fontWeight: 'bold',
   },
   name: {
     fontSize: 18,
     fontFamily: 'Avenir',
     marginBottom: 25, // Added spacing below the name
+    fontWeight: 'bold',
   },
   pointsContainer: {
     flexDirection: 'row',
@@ -251,6 +253,7 @@ const styles = StyleSheet.create({
   themeButtonText: {
     fontSize: 16,
     fontFamily: 'Avenir',
+    fontWeight: 'bold',
   },
   modalContainer: {
     flex: 1,

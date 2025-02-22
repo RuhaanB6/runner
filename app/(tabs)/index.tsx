@@ -42,11 +42,11 @@ export default function Index(): JSX.Element {
         onRequestClose={closeModal}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Randomize Route</Text>
+          <View style={[styles.modalContent, {backgroundColor: theme.background}]}>
+            <Text style={[styles.modalTitle, {color: theme.text}]}>Randomize Route</Text>
 
             {/* Start Button */}
-            <Text style={styles.modalText}>Select a distance</Text>
+            <Text style={[styles.modalText, {color: theme.text}]}>Select a distance</Text>
             <Slider
             style = {{ width: "90%", height: 20, alignContent: 'center'}}
             value={sliderState}
@@ -54,7 +54,7 @@ export default function Index(): JSX.Element {
             minimumValue={0.25}
             maximumValue={10}
             />
-            <Text style={{fontSize: 14, fontWeight: "bold", textAlign: 'center'}}>{sliderState.toPrecision(2)} Miles</Text>
+            <Text style={{fontSize: 14, fontWeight: "bold", textAlign: 'center', color: theme.text}}>{sliderState.toPrecision(2)} Miles</Text>
 
             {/* Confirm Button */}
             <TouchableOpacity
@@ -67,12 +67,13 @@ export default function Index(): JSX.Element {
             {/* The Map */}
             <Map input_param = {false}/>
 
-            {/* Start Button */}
-            
-            <Button title="Start" onPress={() => console.log("Pressed Start")} />
-      
-            {/* Cancel Button */}
-            <Button title="Cancel" onPress={closeModal} color="red" />
+            {/* Making a row style for the start/cancel buttons*/}
+            <View style={styles.textButtonRow}>
+              {/* Cancel Button */}
+              <Button title="Cancel" onPress={closeModal} color="red" />
+              {/* Start Button */}
+              <Button title="Start" onPress={() => console.log("Pressed Start")} />
+            </View>
           </View>
         </View>
       </Modal>
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
-    elevation: 5
+    elevation: 5,
   },
   modalContainer: {
     flex: 1,
@@ -111,7 +112,6 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '90%',
     height: '70%',
-    backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
   },
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   modalText: {
     fontSize: 16,
-    fontWeight: 'medium',
+    fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 20,
     textAlign: 'left',
@@ -135,9 +135,20 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginTop: 30,
     textAlign: 'center',
+    fontWeight: 'bold'
   },
   themeButtonText: {
     fontSize: 16,
     fontFamily: 'Avenir',
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  textButtonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: 60,
+    paddingRight: 60,
   },
 });
