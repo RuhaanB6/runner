@@ -1,13 +1,68 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { useTheme } from '../lib/theme/useTheme';
 import { mainTheme, darkTheme } from '../lib/theme/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ShopScreen() {
   const { theme, toggleTheme } = useTheme();
-  const [selectedHeader, setSelectedHeader] = useState<string | null>(null);
+const [selectedHeader, setSelectedHeader] = useState<string | null>(null);
+const [points, setPoints] = useState(0);
+const [purchasedItems, setPurchasedItems] = useState<Record<string, boolean>>({});
 
-  // Example headers data
+  // Fetch points from AsyncStorage when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch points
+        const pointsStr = await AsyncStorage.getItem('points');
+        const pointsValue = parseInt(pointsStr || '0', 10);
+        setPoints(pointsValue);        setPoints(pointsValue);
+
+        // Fetch purchase status for items
+        const purchasedTheme1 = await AsyncStorage.getItem('purchased_theme_1');
+        const purchasedTheme2 = await AsyncStorage.getItem('purchased_theme_2');
+        setPurchasedItems({
+          purchased_theme_1: purchasedTheme1 === 'true',
+          purchased_theme_2: purchasedTheme2 === 'true',
+        });
+      } catch (e) {
+        console.error('Error fetching data:', e);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handlePurchase = async (itemId: string, cost: number, themeId: number) => {
+    if (points >= cost) {
+      const newPoints = points - cost;
+      setPoints(newPoints);
+  
+      try {
+        // Update points in AsyncStorage
+        await AsyncStorage.setItem('points', newPoints.toString());
+  
+        // Mark the item as purchased
+        await AsyncStorage.setItem(`purchased_${itemId}`, 'true');
+        setPurchasedItems((prev) => ({ ...prev, [`purchased_${itemId}`]: true }));
+  
+        // Apply the theme immediately after purchase
+        const purchasedTheme = getThemeById(themeId)?.theme;
+        if (purchasedTheme) {
+          toggleTheme(purchasedTheme);
+        }
+  
+        Alert.alert('Purchase Successful', 'You have purchased the item!');
+      } catch (e) {
+        console.error('Error saving data:', e);
+        Alert.alert('Error', 'Failed to save data.');
+      }
+    } else {
+      Alert.alert('Not Enough Points', 'You do not have enough points to purchase this item.');
+    }
+  };
+
   const headers = [
     { id: '1', label: 'Themes' },
     { id: '2', label: 'Button' },
@@ -21,8 +76,6 @@ export default function ShopScreen() {
   const getThemeById = (id: number) => {
     return themes.find((theme) => theme.id === id);
   };
-
-  let points: number = 0;
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -70,19 +123,20 @@ export default function ShopScreen() {
           <Text style={[styles.text, { color: getThemeById(1)?.theme.text }]}>
             100 Points
           </Text>
+          {purchasedItems.purchased_theme_1 ? (
+            <Text style={[styles.buttonText, { color: getThemeById(1)?.theme.text }]}>
+               Purchased
+            </Text>
+          ) : (
             <TouchableOpacity
               style={[styles.button, { backgroundColor: getThemeById(1)?.theme.buttonBackground }]}
-              onPress={() => {
-                const theme = getThemeById(1)?.theme;
-                if (theme) {
-                  toggleTheme(theme);
-                } else {
-                  console.warn('Theme not found');
-                }
-              }}
+              onPress={() => handlePurchase('theme_1', 100, 1)}
             >
-              <Text style={[styles.buttonText, { color: getThemeById(1)?.theme.buttonText }]}>Button</Text>
+              <Text style={[styles.buttonText, { color: getThemeById(1)?.theme.buttonText }]}>
+                Buy
+              </Text>
             </TouchableOpacity>
+          )}
         </View>
 
         {/* Second Frame with image */}
@@ -98,19 +152,20 @@ export default function ShopScreen() {
           <Text style={[styles.text, { color: getThemeById(2)?.theme.text }]}>
             200 Points
           </Text>
+          {purchasedItems.purchased_theme_2 ? (
+            <Text style={[styles.buttonText, { color: getThemeById(2)?.theme.text }]}>
+              Purchased
+            </Text>
+          ) : (
             <TouchableOpacity
               style={[styles.button, { backgroundColor: getThemeById(2)?.theme.buttonBackground }]}
-              onPress={() => {
-                const theme = getThemeById(2)?.theme;
-                if (theme) {
-                  toggleTheme(theme);
-                } else {
-                  console.warn('Theme not found');
-                }
-              }}
+              onPress={() => handlePurchase('theme_2', 200, 2)}
             >
-              <Text style={[styles.buttonText, { color: getThemeById(2)?.theme.buttonText }]}>Button2</Text>
+              <Text style={[styles.buttonText, { color: getThemeById(2)?.theme.buttonText }]}>
+                Buy
+              </Text>
             </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
 
