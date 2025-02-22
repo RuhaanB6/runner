@@ -6,7 +6,7 @@ type Theme = typeof mainTheme;
 
 interface ThemeContextProps {
   theme: Theme;
-  toggleTheme: () => void;
+  toggleTheme: (selectedTheme: Theme) => void;
   ThemedButton: React.FC<{ title: string; onPress?: () => void }>;
 }
 
@@ -15,8 +15,8 @@ export const ThemeContext = createContext<ThemeContextProps | undefined>(undefin
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<Theme>(mainTheme);
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === mainTheme ? darkTheme : mainTheme));
+  const toggleTheme = (selectedTheme: Theme) => {
+    setTheme(selectedTheme);
   };
 
   const ThemedButton: React.FC<{ title: string; onPress?: () => void }> = ({ title, onPress }) => {
