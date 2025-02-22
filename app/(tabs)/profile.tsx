@@ -79,16 +79,19 @@ const ProfileScreen = () => {
   // Function to add points
 // Function to add points
 const addPoints = async () => {
-  // Increment points by 10
-  const newPoints = points + 10;
-  
-  // Update state with new points
-  setPoints(newPoints);
-
-  // Store updated points in AsyncStorage
-  await AsyncStorage.setItem('points', newPoints.toString()); // Store as string
+  try {
+    const currentPoints = parseInt(
+      await AsyncStorage.getItem('points') || '0',
+      10
+    );
+    const newPoints = currentPoints + 10; // Get fresh value from storage
+    
+    await AsyncStorage.setItem('points', newPoints.toString());
+    setPoints(newPoints); // Update state AFTER storage
+  } catch (e) {
+    console.error('Error adding points:', e);
+  }
 };
-
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
