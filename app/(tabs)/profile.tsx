@@ -6,13 +6,12 @@ import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
 import ProfileImage from '../../assets/images/profile.png'; // Adjust the path as needed
 import CoinIcon from '../../assets/images/react-logo.png'; // Adjust the path as needed
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 // Defining a few global variables to store the modifiable profile elements
 // TODO: Make a file which stores all these 3 points of data and populate them with that field
 let username_var: string = "Username";
 let first_name_var: string = "First";
 let last_name_var: string = "Last";
-let points: number = 0;
+let pointsStr: string = "120";
 
 const getData = async (key: string):Promise<string> => {
   try {
@@ -63,9 +62,21 @@ const getLastName = async () => {
   }
 
 };
+
+const getPoints = async () => {
+  try {
+    pointsStr = await getData("points");
+  }
+  catch (e) {
+    console.error("Error caught", e);
+  }
+
+};
+
 getUsername();
 getFirstName();
 getLastName();
+getPoints();
 
 if (username_var.length == 0) {
   username_var = "Username";
@@ -86,6 +97,8 @@ const ProfileScreen = () => {
   const [username, setUsername] = useState('Username');
   const [firstName, setFirstName] = useState('First Name');
   const [lastName, setLastName] = useState('Last Name');
+  const [points, setPoints] = useState('Points');
+  setPoints;
 
   // Function to open the modal
   const openModal = () => {
@@ -103,6 +116,7 @@ const ProfileScreen = () => {
     username_var = username;
     first_name_var = firstName;
     last_name_var = lastName;
+    pointsStr = points;
     if (username_var.length == 0) {
       username_var = "Username";
     }
@@ -115,6 +129,7 @@ const ProfileScreen = () => {
     storeData("username", username_var);
     storeData("firstName", first_name_var);
     storeData("lastName", last_name_var);
+    storeData("points", pointsStr);
     closeModal(); // Close the modal after saving
   };
 
@@ -140,7 +155,7 @@ const ProfileScreen = () => {
           source={CoinIcon}
           style={styles.coinIcon}
         />
-        <Text style={[styles.points, {color: theme.text}]}>{String(points)}</Text>
+        <Text style={[styles.points, {color: theme.text}]}>{String(pointsStr)}</Text>
       </View>
 
       {/* Change Profile Button */}
