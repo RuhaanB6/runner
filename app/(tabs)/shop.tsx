@@ -66,6 +66,13 @@ const [purchasedItems, setPurchasedItems] = useState<Record<string, boolean>>({}
     }
   };
 
+  const handleEquip = (themeId: number) => {
+    const equippedTheme = getThemeById(themeId)?.theme;
+    if (equippedTheme) {
+      toggleTheme(equippedTheme);
+    }
+  };
+
   const headers = [
     { id: '1', label: 'Themes' },
     { id: '2', label: 'Button' },
@@ -79,6 +86,8 @@ const [purchasedItems, setPurchasedItems] = useState<Record<string, boolean>>({}
   const getThemeById = (id: number) => {
     return themes.find((theme) => theme.id === id);
   };
+
+  const equippedTheme = getThemeById(1)?.theme;
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -123,23 +132,19 @@ const [purchasedItems, setPurchasedItems] = useState<Record<string, boolean>>({}
 
         {/* Text and button row */}
         <View style={styles.textButtonRow}>
-          <Text style={[styles.text, { color: getThemeById(1)?.theme.text }]}>
-            100 Points
-          </Text>
-          {purchasedItems.purchased_theme_1 ? (
-            <Text style={[styles.buttonText, { color: getThemeById(1)?.theme.text }]}>
-               Purchased
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: getThemeById(1)?.theme.buttonBackground }]}
+            onPress={() => {
+              const equippedTheme = getThemeById(1)?.theme;
+              if (equippedTheme) {
+                handleEquip(1);
+              }
+            }}
+          >
+            <Text style={[styles.buttonText, { color: getThemeById(1)?.theme.buttonText }]}>
+              {getThemeById(1)?.id === 1 ? 'Equipped' : 'Equip'}
             </Text>
-          ) : (
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: getThemeById(1)?.theme.buttonBackground }]}
-              onPress={() => handlePurchase('theme_1', 100, 1)}
-            >
-              <Text style={[styles.buttonText, { color: getThemeById(1)?.theme.buttonText }]}>
-                Buy
-              </Text>
-            </TouchableOpacity>
-          )}
+          </TouchableOpacity>
         </View>
 
         {/* Second Frame with image */}
@@ -235,9 +240,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   textButtonRow: {
+    right: 10,
+    bottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   text: {
     fontSize: 16,
@@ -245,6 +252,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   button: {
+    alignSelf: 'flex-end',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
