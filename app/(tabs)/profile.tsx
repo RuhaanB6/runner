@@ -1,104 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
 import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
-
-// Import the image from the assets folder
 import ProfileImage from '../../assets/images/profile.png'; // Adjust the path as needed
 import CoinIcon from '../../assets/images/react-logo.png'; // Adjust the path as needed
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// Defining a few global variables to store the modifiable profile elements
-// TODO: Make a file which stores all these 3 points of data and populate them with that field
-let username_var: string = "Username";
-let first_name_var: string = "First";
-let last_name_var: string = "Last";
-let pointsStr: string = "120";
-
-const getData = async (key: string):Promise<string> => {
-  try {
-    const value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      return value;
-    } else {
-      return "";
-    }
-  } catch (e) {
-    console.error('Error receiving data', e);
-  }
-  return "";
-};
-
-const storeData= async (key: string, value: string) => {
-  try {
-    await AsyncStorage.setItem(key, value);
-  } catch (e) {
-    console.error("Error saving data", e);
-  }
-};
-
-const getUsername = async () => {
-  try {
-    username_var = await getData("username");
-  }
-  catch (e) {
-    console.error("Error caught", e);
-  }
-};
-
-const getFirstName = async () => {
-  try {
-    first_name_var = await getData("firstName");
-  }
-  catch (e) {
-    console.error("Error caught", e);
-  }
-};
-
-const getLastName = async () => {
-  try {
-    last_name_var = await getData("lastName");
-  }
-  catch (e) {
-    console.error("Error caught", e);
-  }
-
-};
-
-const getPoints = async () => {
-  try {
-    pointsStr = await getData("points");
-  }
-  catch (e) {
-    console.error("Error caught", e);
-  }
-
-};
-
-getUsername();
-getFirstName();
-getLastName();
-getPoints();
-
-if (username_var.length == 0) {
-  username_var = "Username";
-}
-if (first_name_var.length == 0) {
-  first_name_var = "First";
-}
-if (last_name_var.length == 0) {
-  last_name_var = "Last";
-}
 
 const ProfileScreen = () => {
-  const { theme, toggleTheme } = useTheme();  // Get theme and toggleTheme from context
-  // State for the modal visibility
+  const { theme, toggleTheme } = useTheme(); // Get theme and toggleTheme from context
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  // State for the form fields
   const [username, setUsername] = useState('Username');
   const [firstName, setFirstName] = useState('First Name');
   const [lastName, setLastName] = useState('Last Name');
-  const [points, setPoints] = useState('Points');
-  setPoints;
+  const [points, setPoints] = useState(0); // Set points to a number
+
+  // Reload points from AsyncStorage when points change
+useEffect(() => {
+  const savePointsToAsyncStorage = async () => {
+    await AsyncStorage.setItem('points', points.toString());
+  };
+
+  if (points !== 0) { // Prevent saving points if it hasn't changed from 0
+    savePointsToAsyncStorage();
+  }
+}, [points]); // This runs every time the points state changes
+
+
+  // Fetch profile data from AsyncStorage when the component mounts
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const usernameValue = await AsyncStorage.getItem('username') || 'Username';
+        const firstNameValue = await AsyncStorage.getItem('firstName') || 'First';
+        const lastNameValue = await AsyncStorage.getItem('lastName') || 'Last';
+        const pointsValue = await AsyncStorage.getItem('points') || '0';
+        
+        setUsername(usernameValue);
+        setFirstName(firstNameValue);
+        setLastName(lastNameValue);
+        setPoints(parseInt(pointsValue, 10)); // Ensure it's a number
+      } catch (e) {
+        console.error('Error fetching profile data:', e);
+      }
+    };
+
+    fetchProfileData();
+  }, []); // Only run once when the component mounts
 
   // Function to open the modal
   const openModal = () => {
@@ -110,28 +56,34 @@ const ProfileScreen = () => {
     setIsModalVisible(false);
   };
 
-  // Function to handle form submission
-  const handleSave = () => {
-    // Updating the values in the file and the above global variables
-    username_var = username;
-    first_name_var = firstName;
-    last_name_var = lastName;
-    pointsStr = points;
-    if (username_var.length == 0) {
-      username_var = "Username";
+  // Function to handle saving the profile data
+  const handleSave = async () => {
+    try {
+      // Store updated profile data
+      await AsyncStorage.setItem('username', username);
+      await AsyncStorage.setItem('firstName', firstName);
+      await AsyncStorage.setItem('lastName', lastName);
+      await AsyncStorage.setItem('points', points.toString()); // Store as string
+      
+      closeModal(); // Close the modal after saving
+    } catch (e) {
+      console.error('Error saving profile data:', e);
     }
-    if (first_name_var.length == 0) {
-      first_name_var = "First";
-    }
-    if (last_name_var.length == 0) {
-      last_name_var = "Last";
-    }
-    storeData("username", username_var);
-    storeData("firstName", first_name_var);
-    storeData("lastName", last_name_var);
-    storeData("points", pointsStr);
-    closeModal(); // Close the modal after saving
   };
+
+  // Function to add points
+// Function to add points
+const addPoints = async () => {
+  // Increment points by 10
+  const newPoints = points + 10;
+  
+  // Update state with new points
+  setPoints(newPoints);
+
+  // Store updated points in AsyncStorage
+  await AsyncStorage.setItem('points', newPoints.toString()); // Store as string
+};
+
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -139,15 +91,15 @@ const ProfileScreen = () => {
       <View style={styles.imageContainer}>
         <Image
           source={ProfileImage} // Use the imported image
-          style={[styles.profileImage, {backgroundColor: theme.text}]}
+          style={[styles.profileImage, { backgroundColor: theme.text }]}
         />
       </View>
 
       {/* Username Field */}
-      <Text style={[styles.username, {color: theme.text}]}>{username_var}</Text>
+      <Text style={[styles.username, { color: theme.text }]}>{username}</Text>
 
       {/* Name Field */}
-      <Text style={[styles.name, {color: theme.text}]}>{first_name_var} {last_name_var}</Text>
+      <Text style={[styles.name, { color: theme.text }]}>{firstName} {lastName}</Text>
 
       {/* Points Counter with Coin Icon */}
       <View style={styles.pointsContainer}>
@@ -155,16 +107,24 @@ const ProfileScreen = () => {
           source={CoinIcon}
           style={styles.coinIcon}
         />
-        <Text style={[styles.points, {color: theme.text}]}>{String(pointsStr)}</Text>
+        <Text style={[styles.points, { color: theme.text }]}>{points}</Text>
       </View>
+
+      {/* Add Points Button */}
+      <TouchableOpacity
+        style={[styles.themeButton, { backgroundColor: theme.buttonBackground }]}
+        onPress={addPoints}
+      >
+        <Text style={[styles.themeButtonText, { color: theme.buttonText, fontWeight: 'bold' }]}>Add 10 Points</Text>
+      </TouchableOpacity>
 
       {/* Change Profile Button */}
       <TouchableOpacity
         style={[styles.themeButton, { backgroundColor: theme.buttonBackground }]}
         onPress={openModal}
-        >
+      >
         <Text style={[styles.themeButtonText, { color: theme.buttonText, fontWeight: 'bold' }]}>Update Profile</Text>
-        </TouchableOpacity>
+      </TouchableOpacity>
 
       {/* Modal for Changing Profile */}
       <Modal
@@ -180,7 +140,7 @@ const ProfileScreen = () => {
             {/* Username Input */}
             <TextInput
               style={styles.input}
-              placeholder={username_var}
+              placeholder={username}
               value={username}
               onChangeText={setUsername}
               clearTextOnFocus={true}
@@ -189,7 +149,7 @@ const ProfileScreen = () => {
             {/* First Name Input */}
             <TextInput
               style={styles.input}
-              placeholder={first_name_var}
+              placeholder={firstName}
               value={firstName}
               onChangeText={setFirstName}
               clearTextOnFocus={true}
@@ -198,7 +158,7 @@ const ProfileScreen = () => {
             {/* Last Name Input */}
             <TextInput
               style={styles.input}
-              placeholder={last_name_var}
+              placeholder={lastName}
               value={lastName}
               onChangeText={setLastName}
               clearTextOnFocus={true}
@@ -220,14 +180,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 110, // Adjust as needed
+    paddingTop: 110,
   },
   imageContainer: {
     width: 150,
     height: 150,
     borderRadius: 75,
     overflow: 'hidden',
-    marginBottom: 30, // Added spacing below the image
+    marginBottom: 30,
   },
   profileImage: {
     width: '100%',
@@ -242,13 +202,13 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontFamily: 'Avenir',
-    marginBottom: 25, // Added spacing below the name
+    marginBottom: 25,
     fontWeight: 'bold',
   },
   pointsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10, // Added spacing below the points counter
+    marginBottom: 10,
   },
   coinIcon: {
     width: 30,

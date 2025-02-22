@@ -5,7 +5,7 @@ import { mainTheme, darkTheme } from '../lib/theme/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ShopScreen() {
-  const { theme, toggleTheme } = useTheme();
+const { theme, toggleTheme } = useTheme();
 const [selectedHeader, setSelectedHeader] = useState<string | null>(null);
 const [points, setPoints] = useState(0);
 const [purchasedItems, setPurchasedItems] = useState<Record<string, boolean>>({});
@@ -17,8 +17,8 @@ const [purchasedItems, setPurchasedItems] = useState<Record<string, boolean>>({}
         // Fetch points
         const pointsStr = await AsyncStorage.getItem('points');
         const pointsValue = parseInt(pointsStr || '0', 10);
-        setPoints(pointsValue);        setPoints(pointsValue);
-
+        setPoints(pointsValue);
+  
         // Fetch purchase status for items
         const purchasedTheme1 = await AsyncStorage.getItem('purchased_theme_1');
         const purchasedTheme2 = await AsyncStorage.getItem('purchased_theme_2');
@@ -30,14 +30,17 @@ const [purchasedItems, setPurchasedItems] = useState<Record<string, boolean>>({}
         console.error('Error fetching data:', e);
       }
     };
-
+  
     fetchData();
-  }, []);
+  }, [points, purchasedItems]);  // Adding dependencies to rerun if points or purchasedItems change
+  
 
   const handlePurchase = async (itemId: string, cost: number, themeId: number) => {
     if (points >= cost) {
       const newPoints = points - cost;
       setPoints(newPoints);
+      await AsyncStorage.setItem('points', points.toString()); // Store as string
+
   
       try {
         // Update points in AsyncStorage
