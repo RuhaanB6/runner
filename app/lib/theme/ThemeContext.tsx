@@ -1,11 +1,13 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
-import { lightTheme, darkTheme } from './theme';  // Assuming lightTheme and darkTheme are defined elsewhere
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { lightTheme, darkTheme } from './theme';
 
 type Theme = typeof lightTheme;
 
 interface ThemeContextProps {
   theme: Theme;
   toggleTheme: () => void;
+  ThemedButton: React.FC<{ title: string; onPress?: () => void }>;
 }
 
 export const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
@@ -17,8 +19,19 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     setTheme((prevTheme) => (prevTheme === lightTheme ? darkTheme : lightTheme));
   };
 
+  const ThemedButton: React.FC<{ title: string; onPress?: () => void }> = ({ title, onPress }) => {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        style={[styles.button, { backgroundColor: theme.buttonBackground }]}
+      >
+        <Text style={[styles.buttonText, { color: theme.buttonText }]}>{title}</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, ThemedButton }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -31,3 +44,17 @@ export const useTheme = () => {
   }
   return context;
 };
+
+// Styles for the ThemedButton
+const styles = StyleSheet.create({
+  button: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontSize: 16,
+  },
+});
