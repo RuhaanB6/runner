@@ -58,9 +58,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="about"
+        name="shop"
         options={{
-          title: 'About',
+          title: 'Shop',
           tabBarLabelStyle: {
             fontSize: 12,
           },

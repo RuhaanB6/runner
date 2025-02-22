@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../lib/theme/useTheme';
 
-export default function AboutScreen() {
+export default function ShopScreen() {
   const { theme, ThemedButton } = useTheme();
 
   return (
