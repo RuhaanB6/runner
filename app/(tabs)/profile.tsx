@@ -67,15 +67,15 @@ const ProfileScreen = () => {
       <View style={styles.imageContainer}>
         <Image
           source={ProfileImage} // Use the imported image
-          style={styles.profileImage}
+          style={[styles.profileImage, {backgroundColor: theme.text}]}
         />
       </View>
 
       {/* Username Field */}
-      <Text style={styles.username}>{username_var}</Text>
+      <Text style={[styles.username, {color: theme.text}]}>{username_var}</Text>
 
       {/* Name Field */}
-      <Text style={styles.name}>{first_name_var} {last_name_var}</Text>
+      <Text style={[styles.name, {color: theme.text}]}>{first_name_var} {last_name_var}</Text>
 
       {/* Points Counter with Coin Icon */}
       <View style={styles.pointsContainer}>
@@ -83,13 +83,15 @@ const ProfileScreen = () => {
           source={CoinIcon}
           style={styles.coinIcon}
         />
-        <Text style={styles.points}>{String(points)}</Text>
+        <Text style={[styles.points, {color: theme.text}]}>{String(points)}</Text>
       </View>
 
       {/* Change Profile Button */}
-      <TouchableOpacity style={styles.themeButton} onPress={openModal}>
-        <Text style={styles.themeButtonText}>Update Profile</Text>
-      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.themeButton, { backgroundColor: theme.buttonBackground }]}
+        >
+        <Text style={[styles.themeButtonText, { color: theme.buttonText }]}>Update Profile</Text>
+        </TouchableOpacity>
 
       {/* Change Theme Button */}
       <TouchableOpacity
@@ -160,7 +162,6 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 75,
     overflow: 'hidden',
-    backgroundColor: '#E9C46A',
     marginBottom: 30, // Added spacing below the image
   },
   profileImage: {
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
-    marginTop: 30, // Added spacing above the button
+    marginTop: 30,
   },
   themeButtonText: {
     fontSize: 16,
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     width: '80%',

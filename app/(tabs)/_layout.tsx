@@ -29,7 +29,6 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: theme.text,
         headerStyle: { backgroundColor: theme.tabBarBackground},
         headerShadowVisible: false,
         headerTintColor: "fff",
@@ -38,6 +37,8 @@ export default function TabLayout() {
           height: 85,
           borderTopWidth: 0,
         },
+        tabBarActiveTintColor: theme.tabBarActiveTintColor,
+        tabBarInactiveTintColor: theme.tabBarInactiveTintColor,
       }}
     >
       <Tabs.Screen
@@ -46,10 +47,6 @@ export default function TabLayout() {
           title: 'Home',
           tabBarLabelStyle: {
             fontSize: 12,
-            color: theme.tabBarInactiveTintColor,
-          },
-          headerTitleStyle: {
-            color: theme.text
           },
           tabBarIcon: ({ focused }) => (
             <Ionicons
@@ -65,11 +62,7 @@ export default function TabLayout() {
         options={{
           title: 'About',
           tabBarLabelStyle: {
-            color: theme.tabBarInactiveTintColor,
-          },
-          headerTitleStyle: {
             fontSize: 12,
-            color: theme.text
           },
           tabBarIcon: ({ focused }) => (
             <Ionicons
@@ -86,10 +79,6 @@ export default function TabLayout() {
           title: 'Profile',
           tabBarLabelStyle: {
             fontSize: 12,
-            color: theme.tabBarInactiveTintColor,
-          },
-          headerTitleStyle: {
-            color: theme.text
           },
           tabBarIcon: ({ focused }) => (
             <Ionicons
