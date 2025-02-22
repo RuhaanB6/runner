@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Dimensions, ActivityIndicator, Alert } from 'react-native';
-import MapView, { Marker, Region, Polyline, Polygon, Circle } from 'react-native-maps';
+import MapView, { Marker, Region, Polyline, Polygon, Circle, LatLng } from 'react-native-maps';
 import * as Location from 'expo-location';
 import axios from 'axios';
 
@@ -13,17 +13,29 @@ export default function Map({ input_param }: { input_param?: boolean }) {
   const [loading, setLoading] = useState<boolean>(true);
 
   // Destination (hardcoded for this example)
-  const destination = { latitude: 40.42406309238564, longitude: -86.9070466535453 }; 
-
+  const [destination, setDestination] = useState<LatLng>({ latitude: 0, longitude: 0 });  
+  let range = 1;  // distance to run in miles
   useEffect(() => {
     let locationSubscription: Location.LocationSubscription | null = null;
 
     const fetchRoute = async (origin: { latitude: number; longitude: number }) => {
       try {
+        // update destination to be within a certain range of userLocation
+        const randomNum = (Math.random() * 2) - 1;  // random number from -1 to 1
+        const random_latitude_value_miles = randomNum * range;
+        const sign = ((Math.random() < 0.5) ? -1 : 1);  // random sign, -1 or 1
+        const random_longitude_value_miles = sign * Math.sqrt((range ** 2) - (random_latitude_value_miles ** 2));
+        const new_destination_latitude = (origin.latitude + (random_latitude_value_miles / 69));
+        const new_destination_longitude = (origin.longitude + (random_longitude_value_miles / 52));
+        setDestination({ 
+          latitude: new_destination_latitude, 
+          longitude: new_destination_longitude
+        });
+        console.log(`origin: ${origin.latitude}, ${origin.longitude}`);
+        console.log(`Destination: ${new_destination_latitude}, ${new_destination_longitude}`);
         const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${GOOGLE_MAPS_API_KEY}`
+          `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${new_destination_latitude},${new_destination_longitude}&mode=walking&key=${GOOGLE_MAPS_API_KEY}`
         );
-
         if (response.data.routes.length) {
           const points = decodePolyline(response.data.routes[0].overview_polyline.points);
           setRouteCoordinates(points);
@@ -46,6 +58,8 @@ export default function Map({ input_param }: { input_param?: boolean }) {
 
       const userLocation = await Location.getCurrentPositionAsync({});
       setLocation(userLocation);
+
+      
 
       const userRegion = {
         latitude: userLocation.coords.latitude,
@@ -74,7 +88,7 @@ export default function Map({ input_param }: { input_param?: boolean }) {
             longitudeDelta: prev?.longitudeDelta ?? 0.05,
           }));
         }
-      );
+      ) ;
     })();
 
     return () => locationSubscription?.remove();
@@ -116,10 +130,13 @@ export default function Map({ input_param }: { input_param?: boolean }) {
     );
   }
 
+  console.log(`Destination coords: ${destination.latitude}, ${destination.longitude}`);
+
   return (
     <View style={styles.container}>
       {region && (
         <MapView
+          key={routeCoordinates.length}
           style={input_param ? styles.map : styles.small_map}
           region={region}
           showsUserLocation
