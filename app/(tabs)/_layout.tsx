@@ -66,7 +66,7 @@ export default function TabLayout() {
           },
           tabBarIcon: ({ focused }) => (
             <Ionicons
-            name = {focused ? 'information-circle' : 'information-circle-outline'}
+            name = {focused ? 'storefront' : 'storefront-outline'}
             color={focused ? theme.tabBarActiveTintColor : theme.tabBarInactiveTintColor}
             size={30}
             />

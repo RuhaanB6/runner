@@ -93,14 +93,6 @@ const ProfileScreen = () => {
         <Text style={[styles.themeButtonText, { color: theme.buttonText }]}>Update Profile</Text>
         </TouchableOpacity>
 
-      {/* Change Theme Button */}
-      <TouchableOpacity
-        style={[styles.themeButton, { backgroundColor: theme.buttonBackground }]}
-        onPress={toggleTheme}
-      >
-        <Text style={[styles.themeButtonText, { color: theme.buttonText }]}>Change Theme</Text>
-      </TouchableOpacity>
-
       {/* Modal for Changing Profile */}
       <Modal
         visible={isModalVisible}
