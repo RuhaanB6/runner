@@ -58,15 +58,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="about"
+        name="shop"
         options={{
-          title: 'About',
+          title: 'Shop',
           tabBarLabelStyle: {
             fontSize: 12,
           },
           tabBarIcon: ({ focused }) => (
             <Ionicons
-            name = {focused ? 'information-circle' : 'information-circle-outline'}
+            name = {focused ? 'storefront' : 'storefront-outline'}
             color={focused ? theme.tabBarActiveTintColor : theme.tabBarInactiveTintColor}
             size={30}
             />

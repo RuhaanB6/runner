@@ -1,11 +1,12 @@
 export const mainTheme = {
   background: '#264653',
-  text: '#e9c46a',
+  text: '#ffc24a',
   tabBarBackground: '#3e7287',
   buttonBackground: '#2a9d8f',
-  buttonText: '#ffffff',
-  tabBarActiveTintColor: '#e9c46a',
+  buttonText: '#ffc24a',
+  tabBarActiveTintColor: '#ffc24a',
   tabBarInactiveTintColor: '#264653',
+  shopbackground: '#172b33',
 };
 
 export const darkTheme = {
@@ -15,5 +16,6 @@ export const darkTheme = {
   buttonBackground: '#555555',  
   buttonText: '#ffffff',
   tabBarActiveTintColor: '#ffffff',
-  tabBarInactiveTintColor: '#1D1D1D',       
+  tabBarInactiveTintColor: '#1D1D1D',   
+  shopbackground: '#050505',
 };
