@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyDcwUsznAwu7dWDBPAozCSNx3ph3B4NhXI'; 
 
-export default function Map() {
+export default function Map({ input_param }: { input_param?: boolean }) {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<{ latitude: number; longitude: number }[]>([]);
@@ -120,7 +120,7 @@ export default function Map() {
     <View style={styles.container}>
       {region && (
         <MapView
-          style={styles.map}
+          style={input_param ? styles.map : styles.small_map}
           region={region}
           showsUserLocation
           showsMyLocationButton
@@ -166,4 +166,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   map: { width: Dimensions.get('window').width, height: Dimensions.get('window').height },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+
+  // This is the style-sheet for the inside of the confirm route view
+  small_map: { width: "90%", height: "90%", alignSelf: 'center', paddingTop: 20} 
 });
