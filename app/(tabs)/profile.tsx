@@ -1,51 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
-import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
-import ProfileImage from '../../assets/images/profile.png'; // Adjust the path as needed
-import CoinIcon from '../../assets/images/react-logo.png'; // Adjust the path as needed
+import { useTheme } from '../lib/theme/useTheme';
+import ProfileImage from '../../assets/images/profile.png';
+import CoinIcon from '../../assets/images/react-logo.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// Add at the top with other imports
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useIsFocused } from '@react-navigation/native'; // Add this import
 
+
+// Define your root stack param list (add this type)
+type RootStackParamList = {
+  Profile: undefined;
+  // Add other screens if needed
+};
+
+// Define props type
+type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, 'Profile'>;
+
+// Update component definition
 const ProfileScreen = () => {
-  const { theme, toggleTheme } = useTheme(); // Get theme and toggleTheme from context
+  const isFocused = useIsFocused(); // Add this hook
+  const { theme, toggleTheme } = useTheme();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [username, setUsername] = useState('Username');
   const [firstName, setFirstName] = useState('First Name');
   const [lastName, setLastName] = useState('Last Name');
-  const [points, setPoints] = useState(0); // Set points to a number
+  const [points, setPoints] = useState(0);
 
-  // Reload points from AsyncStorage when points change
-useEffect(() => {
-  const savePointsToAsyncStorage = async () => {
-    await AsyncStorage.setItem('points', points.toString());
-  };
-
-  if (points !== 0) { // Prevent saving points if it hasn't changed from 0
-    savePointsToAsyncStorage();
-  }
-}, [points]); // This runs every time the points state changes
-
-
-  // Fetch profile data from AsyncStorage when the component mounts
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const usernameValue = await AsyncStorage.getItem('username') || 'Username';
-        const firstNameValue = await AsyncStorage.getItem('firstName') || 'First';
-        const lastNameValue = await AsyncStorage.getItem('lastName') || 'Last';
-        const pointsValue = await AsyncStorage.getItem('points') || '0';
-        
-        setUsername(usernameValue);
-        setFirstName(firstNameValue);
-        setLastName(lastNameValue);
-        setPoints(parseInt(pointsValue, 10)); // Ensure it's a number
-      } catch (e) {
-        console.error('Error fetching profile data:', e);
+    // Updated points sync logic
+    useEffect(() => {
+      const loadPoints = async () => {
+        try {
+          const pointsValue = await AsyncStorage.getItem('points');
+          setPoints(parseInt(pointsValue || '0', 10));
+        } catch (e) {
+          console.error('Error loading points:', e);
+        }
+      };
+  
+      // Load points when screen comes into focus
+      if (isFocused) {
+        loadPoints();
       }
-    };
+    }, [isFocused]); // Add isFocused to dependencies
 
-    fetchProfileData();
-  }, []); // Only run once when the component mounts
+  // Save points automatically
+  useEffect(() => {
+    AsyncStorage.setItem('points', points.toString());
+  }, [points]);
 
+  // Rest of your existing code remains unchanged
   // Function to open the modal
   const openModal = () => {
     setIsModalVisible(true);
@@ -74,16 +79,19 @@ useEffect(() => {
   // Function to add points
 // Function to add points
 const addPoints = async () => {
-  // Increment points by 10
-  const newPoints = points + 10;
-  
-  // Update state with new points
-  setPoints(newPoints);
-
-  // Store updated points in AsyncStorage
-  await AsyncStorage.setItem('points', newPoints.toString()); // Store as string
+  try {
+    const currentPoints = parseInt(
+      await AsyncStorage.getItem('points') || '0',
+      10
+    );
+    const newPoints = currentPoints + 10; // Get fresh value from storage
+    
+    await AsyncStorage.setItem('points', newPoints.toString());
+    setPoints(newPoints); // Update state AFTER storage
+  } catch (e) {
+    console.error('Error adding points:', e);
+  }
 };
-
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
