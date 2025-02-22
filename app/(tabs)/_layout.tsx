@@ -1,15 +1,19 @@
 import { Tabs } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useTheme } from '../lib/theme/ThemeContext';
 
 export default function TabLayout() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: '#ffd33d',
+        tabBarStyle: { backgroundColor: theme.tabBarBackground },
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="index"  // This is the default route for the (tabs) directory
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
@@ -18,7 +22,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="about"
+        name="about"  // This is another route in the (tabs) directory
         options={{
           title: 'About',
           tabBarIcon: ({ color, focused }) => (
