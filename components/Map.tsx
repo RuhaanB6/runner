@@ -13,8 +13,8 @@ export default function Map() {
   const [loading, setLoading] = useState<boolean>(true);
 
   // Destination (hardcoded for this example)
-  const destination = { latitude: 40.42406309238564, longitude: -86.9070466535453 }; 
-
+  let destination = { latitude: 40.42406309238564, longitude: -86.9070466535453 }; 
+  let range = 4;  // distance to run in miles
   useEffect(() => {
     let locationSubscription: Location.LocationSubscription | null = null;
 
@@ -47,6 +47,11 @@ export default function Map() {
       const userLocation = await Location.getCurrentPositionAsync({});
       setLocation(userLocation);
 
+      // update destination to be within a certain range of userLocation
+      const random_latitude_value = Math.random() / 69;
+      const random_longitude_value = (random_latitude_value * 69) / 54.6;
+      destination = { latitude: ((random_latitude_value * range) * 69), longitude: (54.6 * (Math.sqrt((range ** 2) - ((random_longitude_value * range) ** 2))))}
+
       const userRegion = {
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
@@ -74,7 +79,7 @@ export default function Map() {
             longitudeDelta: prev?.longitudeDelta ?? 0.05,
           }));
         }
-      );
+      ) ;
     })();
 
     return () => locationSubscription?.remove();

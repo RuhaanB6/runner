@@ -73,10 +73,10 @@ if (username_var.length == 0) {
   username_var = "Username";
 }
 if (first_name_var.length == 0) {
-  username_var = "First";
+  first_name_var = "First";
 }
 if (last_name_var.length == 0) {
-  username_var = "Last";
+  last_name_var = "Last";
 }
 
 const ProfileScreen = () => {
@@ -148,6 +148,7 @@ const ProfileScreen = () => {
       {/* Change Profile Button */}
       <TouchableOpacity
         style={[styles.themeButton, { backgroundColor: theme.buttonBackground }]}
+        onPress={openModal}
         >
         <Text style={[styles.themeButtonText, { color: theme.buttonText }]}>Update Profile</Text>
         </TouchableOpacity>
