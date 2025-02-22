@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Butt
 // Import the image from the assets folder
 import ProfileImage from '../../assets/images/react-logo.png'; // Adjust the path as needed
 import CoinIcon from '../../assets/images/react-logo.png'; // Adjust the path as needed
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Defining a few global variables to store the modifiable profile elements
 // TODO: Make a file which stores all these 3 points of data and populate them with that field
@@ -11,6 +12,61 @@ let username_var: string = "Username";
 let first_name_var: string = "First";
 let last_name_var: string = "Last";
 let points: number = 0;
+
+const getData = async (key: string):Promise<string> => {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    if (value !== null) {
+      return value;
+    } else {
+      return "";
+    }
+  } catch (e) {
+    console.error('Error receiving data', e);
+  }
+  return "";
+};
+
+const storeData= async (key: string, value: string) => {
+  try {
+    await AsyncStorage.setItem(key, value);
+  } catch (e) {
+    console.error("Error saving data", e);
+  }
+};
+
+const getUsername = async () => {
+  try {
+    username_var = await getData("username");
+  }
+  catch (e) {
+    console.error("Error caught", e);
+  }
+};
+
+const getFirstName = async () => {
+  try {
+    first_name_var = await getData("firstName");
+  }
+  catch (e) {
+    console.error("Error caught", e);
+  }
+};
+
+const getLastName = async () => {
+  try {
+    last_name_var = await getData("lastName");
+  }
+  catch (e) {
+    console.error("Error caught", e);
+  }
+};
+getUsername();
+getFirstName();
+getLastName();
+console.log('username: ' + username_var);
+console.log("first name: " + first_name_var);
+console.log("last name: " + last_name_var);
 
 if (username_var.length == 0) {
   username_var = "Username";
@@ -56,6 +112,9 @@ const ProfileScreen = () => {
     if (last_name_var.length == 0) {
       username_var = "Last";
     }
+    storeData("username", username_var);
+    storeData("firstName", first_name_var);
+    storeData("lastName", last_name_var);
     closeModal(); // Close the modal after saving
   };
 
