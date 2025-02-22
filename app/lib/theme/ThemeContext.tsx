@@ -1,8 +1,8 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { lightTheme, darkTheme } from './theme';
+import { mainTheme, darkTheme } from './theme';
 
-type Theme = typeof lightTheme;
+type Theme = typeof mainTheme;
 
 interface ThemeContextProps {
   theme: Theme;
@@ -13,10 +13,10 @@ interface ThemeContextProps {
 export const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>(lightTheme);
+  const [theme, setTheme] = useState<Theme>(mainTheme);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === lightTheme ? darkTheme : lightTheme));
+    setTheme((prevTheme) => (prevTheme === mainTheme ? darkTheme : mainTheme));
   };
 
   const ThemedButton: React.FC<{ title: string; onPress?: () => void }> = ({ title, onPress }) => {
@@ -45,7 +45,6 @@ export const useTheme = () => {
   return context;
 };
 
-// Styles for the ThemedButton
 const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 20,
