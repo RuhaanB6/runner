@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
+import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
 
 // Import the image from the assets folder
 import ProfileImage from '../../assets/images/react-logo.png'; // Adjust the path as needed
@@ -23,6 +24,7 @@ if (last_name_var.length == 0) {
 }
 
 const ProfileScreen = () => {
+  const { theme, toggleTheme } = useTheme();  // Get theme and toggleTheme from context
   // State for the modal visibility
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -60,7 +62,7 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Circular Image Placement */}
       <View style={styles.imageContainer}>
         <Image
@@ -78,7 +80,7 @@ const ProfileScreen = () => {
       {/* Points Counter with Coin Icon */}
       <View style={styles.pointsContainer}>
         <Image
-          source={CoinIcon} // Use the imported coin icon
+          source={CoinIcon}
           style={styles.coinIcon}
         />
         <Text style={styles.points}>{String(points)}</Text>
@@ -90,8 +92,11 @@ const ProfileScreen = () => {
       </TouchableOpacity>
 
       {/* Change Theme Button */}
-      <TouchableOpacity style={styles.themeButton}>
-        <Text style={styles.themeButtonText}>Change Theme</Text>
+      <TouchableOpacity
+        style={[styles.themeButton, { backgroundColor: theme.buttonBackground }]}
+        onPress={toggleTheme}
+      >
+        <Text style={[styles.themeButtonText, { color: theme.buttonText }]}>Change Theme</Text>
       </TouchableOpacity>
 
       {/* Modal for Changing Profile */}
@@ -147,14 +152,13 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#264653', // Charcoal background
     alignItems: 'center',
     paddingTop: 75, // Adjust as needed
   },
   imageContainer: {
     width: 150,
     height: 150,
-    borderRadius: 75, // Makes it circular
+    borderRadius: 75,
     overflow: 'hidden',
     backgroundColor: '#E9C46A',
     marginBottom: 30, // Added spacing below the image
@@ -165,13 +169,11 @@ const styles = StyleSheet.create({
   },
   username: {
     fontSize: 24,
-    color: '#e9c46a', // Saffron text
-    fontFamily: 'Avenir', // Use a rounded font like Avenir or similar
-    marginBottom: 25, // Added spacing below the username
+    fontFamily: 'Avenir',
+    marginBottom: 25,
   },
   name: {
     fontSize: 18,
-    color: '#f4a261', // Sandy Brown text
     fontFamily: 'Avenir',
     marginBottom: 25, // Added spacing below the name
   },
@@ -181,24 +183,21 @@ const styles = StyleSheet.create({
     marginBottom: 10, // Added spacing below the points counter
   },
   coinIcon: {
-    width: 30, // Size of the coin icon
+    width: 30,
     height: 30,
     marginRight: 10,
   },
   points: {
     fontSize: 22,
-    color: '#e9c46a', // Saffron text
     fontFamily: 'Avenir',
   },
   themeButton: {
-    backgroundColor: '#2a9d8f', // Persian Green
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
     marginTop: 30, // Added spacing above the button
   },
   themeButtonText: {
-    color: '#fff',
     fontSize: 16,
     fontFamily: 'Avenir',
   },
