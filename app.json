@@ -12,7 +12,7 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app uses your location to show your position on the map."
       },  
-      "bundleIdentifier": "com.anonymous.runner"
+      "bundleIdentifier": "com.anonymous.runner",
       "supportsTablet": true,
       "icon": "./assets/images/runner_app_logo.png",
       "name": "Runner"
