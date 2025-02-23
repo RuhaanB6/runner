@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons'; // Ensure this package is in
 import Map from '@/components/Map'; // Adjust the path if needed
 import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
 import Slider from "@react-native-community/slider" // Adding the community package for the slider
+import { getDestination } from '@/components/Map';
 
 export default function Index(): JSX.Element {
   
