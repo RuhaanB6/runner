@@ -5,6 +5,8 @@ import Map from '@/components/Map'; // Adjust the path if needed
 import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
 import Slider from "@react-native-community/slider" // Adding the community package for the slider
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {LatLng} from 'react-native-maps';
+
 
 export default function Index(): JSX.Element {
 
@@ -29,6 +31,7 @@ export default function Index(): JSX.Element {
 
   const [range, setRange] = useState<number | undefined>(undefined);
 
+  const [destination, setDestination] = useState<LatLng | undefined>(undefined);
   // State for start button visibility
   const [isStartVisible, setIsStartVisible] = useState(true);
 
@@ -87,16 +90,15 @@ export default function Index(): JSX.Element {
   const closeModal = () => {
     setIsModalVisible(false);
   };
-
+  
   // Function to close the loss modal
   const closeLossModal = () => {
     setIsLossVisible(false);
     openStart();
     closeStop();
   }
-
-  const changeRange = (range:number) => {
-      setRange(range);
+  const changeRange = () => {
+      setRange(sliderState);
   };
   
 
@@ -158,13 +160,13 @@ export default function Index(): JSX.Element {
             {/* Confirm Button */}
             <TouchableOpacity
               style={[styles.themeButton, { backgroundColor: theme.buttonBackground }]}
-              onPress={() => console.log({sliderState})}
+              onPressIn={changeRange}
               >
               <Text style={[styles.themeButtonText, { color: theme.buttonText }]}>Confirm Distance</Text>
               </TouchableOpacity>
 
             {/* The Map */}
-            <Map input_param = {false}/>
+            <Map input_param = {false} range={range}/>
 
             {/* Making a row style for the start/cancel buttons*/}
             <View style={styles.textButtonRow}>
