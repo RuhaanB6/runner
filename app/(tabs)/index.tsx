@@ -13,6 +13,9 @@ export default function Index(): JSX.Element {
   // State for the modal visibility
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+
+  const [range, setRange] = useState<number | undefined>(undefined);
+
   // State for start button visibility
   const [isStartVisible, setIsStartVisible] = useState(true);
 
@@ -58,6 +61,11 @@ export default function Index(): JSX.Element {
   const closeModal = () => {
     setIsModalVisible(false);
   };
+
+  const changeRange = (range:number) => {
+      setRange(range);
+  };
+  
 
   const { theme, toggleTheme } = useTheme();  // Get theme and toggleTheme from context
   return (
