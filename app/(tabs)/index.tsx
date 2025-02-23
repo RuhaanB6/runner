@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Modal, Button, Text} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Modal, Button, Text, Alert} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'; // Ensure this package is installed
 import Map from '@/components/Map'; // Adjust the path if needed
 import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
@@ -10,7 +10,7 @@ export default function Index(): JSX.Element {
   // State for sliderState
   const [sliderState, setSliderState] = React.useState<number>(0.25);
 
-  // State for the modal visibility
+  // State for the map modal visibility
   const [isModalVisible, setIsModalVisible] = useState(false);
 
 
@@ -21,6 +21,8 @@ export default function Index(): JSX.Element {
 
   // State for stop button visibility
   const [isStopVisible, setIsStopVisible] = useState(false);
+
+  const [completedChallenge, setCompletedChallenge] = useState(false);
 
   // Function to make start visible
   const openStart = () => {
@@ -56,6 +58,17 @@ export default function Index(): JSX.Element {
 
   const closePressed = () => {
   }
+
+  ///////////
+
+  // State for the loss visibility
+  const [isLossVisible, setIsLossVisible] = useState(false);
+
+  const stopPressed = () => {
+    openStart();
+    closeStop();
+    setIsLossVisible(true);
+  }
   
   // Function to close the modal
   const closeModal = () => {
@@ -73,10 +86,17 @@ export default function Index(): JSX.Element {
       <Map input_param={true}/>
       <TouchableOpacity
         style={[isStartVisible ? styles.startButton : styles.startButtonDiss, { backgroundColor: theme.buttonBackground }]}
-        onPress={isStartVisible ? openModal : closePressed}
+        onPress={isStartVisible ? openModal : stopPressed}
       >
         {isStartVisible ? (<MaterialIcons name="play-arrow" size={30} color="white" />) : (<MaterialIcons name="stop" size={30} color="white" />)}
       </TouchableOpacity>
+
+      {/* Modal for not a successful completion */}
+      <Modal
+        visible={isLossVisible}
+      >
+
+      </Modal>
 
       {/* Modal for Changing Profile */}
       <Modal
