@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, View, Dimensions, ActivityIndicator, Alert } from 'react-native';
 import MapView, { Marker, Region, Polyline, Polygon, Circle, LatLng } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -6,46 +6,47 @@ import axios from 'axios';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyDcwUsznAwu7dWDBPAozCSNx3ph3B4NhXI'; 
 
-
-export default function Map({ input_param, range}: {input_param: boolean, range?: number}) {
+export default function Map({ input_param, range }: { input_param: boolean; range?: number }) {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<{ latitude: number; longitude: number }[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [destination, setDestination] = useState<LatLng>({ latitude: 0, longitude: 0 });  
+  const [destination, setDestination] = useState<LatLng>({ latitude: 0, longitude: 0 });
 
+  // Fetch route whenever location or range changes
+  const fetchRoute = useCallback(async (origin: { latitude: number; longitude: number }, currentRange: number) => {
+    try {
+      const randomNum = (Math.random() * 2) - 1;
+      const randomLatitudeValueMiles = randomNum * currentRange;
+      const sign = Math.random() < 0.5 ? -1 : 1;
+      const randomLongitudeValueMiles = sign * Math.sqrt(currentRange ** 2 - randomLatitudeValueMiles ** 2);
+      const newDestinationLatitude = origin.latitude + randomLatitudeValueMiles / 69;
+      const newDestinationLongitude = origin.longitude + randomLongitudeValueMiles / 52;
+
+      setDestination({
+        latitude: newDestinationLatitude,
+        longitude: newDestinationLongitude,
+      });
+
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${newDestinationLatitude},${newDestinationLongitude}&mode=walking&key=${GOOGLE_MAPS_API_KEY}`
+      );
+
+      if (response.data.routes.length) {
+        const points = decodePolyline(response.data.routes[0].overview_polyline.points);
+        setRouteCoordinates(points);
+      } else {
+        Alert.alert('No route found');
+      }
+    } catch (error) {
+      console.error('Directions API error:', error);
+      Alert.alert('Error fetching directions');
+    }
+  }, []);
+
+  // Initial setup for location permissions and subscription
   useEffect(() => {
     let locationSubscription: Location.LocationSubscription | null = null;
-
-    const fetchRoute = async (origin: { latitude: number; longitude: number }) => {
-      try {
-        const randomNum = (Math.random() * 2) - 1;  // random number from -1 to 1
-        const random_latitude_value_miles = randomNum * (range? range : 0);
-        const sign = ((Math.random() < 0.5) ? -1 : 1);  // random sign, -1 or 1
-        const random_longitude_value_miles = sign * Math.sqrt(((range ? range : 0) ** 2) - (random_latitude_value_miles ** 2));
-        const new_destination_latitude = (origin.latitude + (random_latitude_value_miles / 69));
-        const new_destination_longitude = (origin.longitude + (random_longitude_value_miles / 52));
-
-        setDestination({ 
-          latitude: new_destination_latitude, 
-          longitude: new_destination_longitude
-        });
-        console.log(`origin: ${origin.latitude}, ${origin.longitude}`);
-        console.log(`Destination: ${new_destination_latitude}, ${new_destination_longitude}`);
-        const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${new_destination_latitude},${new_destination_longitude}&mode=walking&key=${GOOGLE_MAPS_API_KEY}`
-        );
-        if (response.data.routes.length) {
-          const points = decodePolyline(response.data.routes[0].overview_polyline.points);
-          setRouteCoordinates(points);
-        } else {
-          Alert.alert('No route found');
-        }
-      } catch (error) {
-        console.error('Directions API error:', error);
-        Alert.alert('Error fetching directions');
-      }
-    };
 
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -58,8 +59,6 @@ export default function Map({ input_param, range}: {input_param: boolean, range?
       const userLocation = await Location.getCurrentPositionAsync({});
       setLocation(userLocation);
 
-      
-
       const userRegion = {
         latitude: userLocation.coords.latitude,
         longitude: userLocation.coords.longitude,
@@ -69,14 +68,6 @@ export default function Map({ input_param, range}: {input_param: boolean, range?
 
       setRegion(userRegion);
       setLoading(false);
-
-      // Fetch route after setting location
-      if (range) {
-        fetchRoute({
-          latitude: userLocation.coords.latitude,
-          longitude: userLocation.coords.longitude,
-        });
-      }
 
       locationSubscription = await Location.watchPositionAsync(
         { accuracy: Location.Accuracy.High, timeInterval: 5000, distanceInterval: 10 },
@@ -89,11 +80,25 @@ export default function Map({ input_param, range}: {input_param: boolean, range?
             longitudeDelta: prev?.longitudeDelta ?? 0.05,
           }));
         }
-      ) ;
+      );
     })();
 
     return () => locationSubscription?.remove();
   }, []);
+
+  // Fetch route when location or range changes
+  useEffect(() => {
+    if (location && range !== undefined) {
+      fetchRoute(
+        { latitude: location.coords.latitude, longitude: location.coords.longitude },
+        range
+      );
+    }
+  }, [location, range, fetchRoute]);
+
+  // Rest of the component remains the same...
+  // (decodePolyline, loading check, and render method)
+
 
   // Decode polyline from Google Directions API
   const decodePolyline = (t: string) => {
