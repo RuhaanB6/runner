@@ -1,4 +1,4 @@
-# Welcome to Momentive 👋
+# Welcome to Momentive 🏃‍♂️
 
 Momentive is an app that encourages both novice and expierienced runners alike to step their foot out the door and go for a run. With randomized routes, every run is different, and Momentive is the perfect app to spice up a stale running routine. Momentive caters to runners at every level by allowing you to run as short or long as you want to. With rewards after every completed run, users won't be able to resist coming back to Momentive and going for a run, day after day, building the routine of movement that is a cornerstone for a healthy lifestyle.
 
