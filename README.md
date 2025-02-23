@@ -5,14 +5,17 @@ We created Momentive to help users stay motivated through gamification and perso
 
 ## What it does
 Momentive is a motivation-boosting app that:
+- Creates quality running routes based on user distance preferences
+- Ensures randomness and excitement in the route-selection proccess
+- Holds and maintains location data to track user against route
 - Tracks user progress through a points system
 - Allows users to earn points and unlock premium themes
 - Provides a customizable profile with username and personal details
 - Features a shop where users can spend points to purchase themes
 - Maintains persistent storage of user data and purchases
-- Supports light/dark mode and custom theme selection
 
 Key Features:
+- **Route Planning:** Creates routes based on user distance preference and proximity
 - **Profile Management:** Edit username, first/last name, and track points
 - **Points System:** Earn points through app engagement
 - **Theme Shop:** Purchase and apply new themes using earned points
@@ -20,14 +23,15 @@ Key Features:
 
 ## How we built it
 Momentive was built using:
-- **Frontend:** React Native with TypeScript
+- **Frontend:** React Native Expo with TypeScript
 - **State Management:** React hooks (useState, useEffect)
 - **Navigation:** React Navigation
 - **Persistence:** AsyncStorage for local data storage
-- **Theming:** Custom theme provider with light/dark mode support
+- **Theming:** Custom themes with css stylesheets
 - **UI Components:** Custom-designed components with responsive layouts
 
 Technical Highlights:
+- Effectively parsed through Google API data to procure routes
 - Implemented bi-directional data synchronization between Profile and Shop
 - Developed atomic storage operations for reliable data persistence
 - Created a dynamic purchase system that supports future expansion
@@ -37,10 +41,11 @@ Technical Highlights:
 1. **Data Synchronization:** Ensuring real-time updates between Profile and Shop screens
 2. **State Management:** Handling complex state interactions between points and purchases
 3. **Persistence:** Maintaining data consistency across app restarts
-4. **Error Handling:** Implementing robust error recovery for storage operations
+4. **Location and Route Interaction:** Implementing new routes and combining it with user location to maintain a game-loop
 5. **UI Consistency:** Maintaining visual coherence across different themes
 
 ## Accomplishments that we're proud of
+- Implemented maps and location into a (if we say so ourselves) beautiful UI
 - Successfully implemented a reliable points system with bi-directional sync
 - Created an expandable theme shop with persistent purchase tracking
 - Developed a smooth user experience with instant feedback
@@ -63,7 +68,6 @@ Technical Highlights:
 5. **Daily Challenges:** Implement daily tasks for bonus points
 6. **Analytics:** Add usage tracking to improve user experience
 7. **Accessibility:** Enhance accessibility features for wider user base
-8. **Monetization:** Explore premium features or ad-supported model
 
 ## Getting Started
 To run Momentive locally:
@@ -71,9 +75,4 @@ To run Momentive locally:
 2. Install dependencies: `npm install`
 3. Start the development server: `npm start`
 4. Run on your preferred platform: `npm run android` or `npm run ios`
-
-## Contributing
-We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## License
-Momentive is released under the MIT License. See [LICENSE](LICENSE) for details.
+** NOTE: Need Node.JS installed to use `npm` **
