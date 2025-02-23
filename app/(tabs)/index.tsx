@@ -4,8 +4,21 @@ import { MaterialIcons } from '@expo/vector-icons'; // Ensure this package is in
 import Map from '@/components/Map'; // Adjust the path if needed
 import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
 import Slider from "@react-native-community/slider" // Adding the community package for the slider
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Index(): JSX.Element {
+
+  // Points
+  const [points, setPoints] = useState(0);
+  const loadData = async () => {
+    try {
+      const pointsValue = await AsyncStorage.getItem('points');
+      setPoints(parseInt(pointsValue || '0', 10));
+    } catch (e) {
+      console.error('Error loading points:', e);
+    }
+  }
+  loadData();
   
   // State for sliderState
   const [sliderState, setSliderState] = React.useState<number>(0.25);
@@ -75,6 +88,13 @@ export default function Index(): JSX.Element {
     setIsModalVisible(false);
   };
 
+  // Function to close the loss modal
+  const closeLossModal = () => {
+    setIsLossVisible(false);
+    openStart();
+    closeStop();
+  }
+
   const changeRange = (range:number) => {
       setRange(range);
   };
@@ -94,8 +114,23 @@ export default function Index(): JSX.Element {
       {/* Modal for not a successful completion */}
       <Modal
         visible={isLossVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={closeLossModal}
       >
-
+        <View style={styles.modalContainer}>
+          <View style={[styles.modalLossContent, {backgroundColor: theme.background}]}>
+            <Text style={[styles.modalTitle, {color: theme.text}]}>Better Luck Next Time</Text>
+            <Text style={[styles.points, { color: theme.text, textAlign: 'center'}]}>Points Earned: {0}</Text>
+            <Text style={[styles.points, { color: theme.text, textAlign: 'center'}]}>Total Points: {points}</Text>
+            <TouchableOpacity
+              style={[styles.themeButton, { backgroundColor: theme.buttonBackground }]}
+              onPress={closeLossModal}
+              >
+              <Text style={[styles.themeButtonText, { color: theme.buttonText }]}>Ok</Text>
+              </TouchableOpacity>
+          </View>
+        </View>
       </Modal>
 
       {/* Modal for Changing Profile */}
@@ -194,6 +229,12 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
   },
+  modalLossContent: {
+    width: '80%',
+    height: '30%',
+    padding: 20,
+    borderRadius: 10,
+  },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -229,5 +270,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: 60,
     paddingRight: 60,
+  },
+  points: {
+    fontSize: 22,
+    fontFamily: 'Avenir',
+    marginBottom: 10,
   },
 });
