@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
 import { useTheme } from '../lib/theme/useTheme';
 import ProfileImage from '../../assets/images/profile.png';
-import CoinIcon from '../../assets/images/react-logo.png';
+import CoinIcon from '../../assets/images/shoes.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // Add at the top with other imports
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -116,10 +116,10 @@ const addPoints = async () => {
       <Text style={[styles.name, { color: theme.text }]}>{firstName} {lastName}</Text>
 
       {/* Points Counter with Coin Icon */}
-      <View style={styles.pointsContainer}>
+      <View style={[styles.pointsContainer, { backgroundColor: theme.shopbackground }]}>
         <Image
           source={CoinIcon}
-          style={styles.coinIcon}
+          style={[styles.coinIcon, { backgroundColor: theme.text}]}
         />
         <Text style={[styles.points, { color: theme.text }]}>{points}</Text>
       </View>
@@ -223,11 +223,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    borderRadius: 20,
+    paddingHorizontal: 9,
   },
   coinIcon: {
+    borderRadius: 75,
     width: 30,
     height: 30,
-    marginRight: 10,
+    marginRight: 20,
   },
   points: {
     fontSize: 22,

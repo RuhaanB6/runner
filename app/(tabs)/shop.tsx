@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, Button } from 'react-native';
 import { useTheme } from '../lib/theme/useTheme';
 import { mainTheme, darkTheme, cyberPunk } from '../lib/theme/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
+import * as Progress from "react-native-progress";
 
 // Array/Dictionary to store all the arrays
 const PURCHASABLE_ITEMS = [
@@ -13,48 +14,16 @@ const PURCHASABLE_ITEMS = [
 ];
 
 export default function ShopScreen() {
-
-  // // reset data function only call in button !
-  
-  // const resetDataToDefault = async () => {
-  //   try {
-  //     // Reset points to 0
-  //     await AsyncStorage.setItem('points', '0');
-  //     setPoints(0);
-  
-  //     // Reset purchased items to default
-  //     const defaultPurchasedItems = {
-  //       theme_1: true, // Assuming theme_1 is the default and already purchased
-  //       theme_2: false,
-  //       theme_3: false,
-  //     };
-  //     await AsyncStorage.setItem('purchased_theme_1', 'true');
-  //     await AsyncStorage.setItem('purchased_theme_2', 'false');
-  //     await AsyncStorage.setItem('purchased_theme_3', 'false');
-  //     setPurchasedItems(defaultPurchasedItems);
-  
-  //     // Reset equipped theme to default (theme_1)
-  //     setEquippedThemeId(1);
-  
-  //     // Optionally, apply the default theme
-  //     const defaultTheme = getThemeById(1)?.theme;
-  //     if (defaultTheme) {
-  //       toggleTheme(defaultTheme);
-  //     }
-  
-  //     Alert.alert('Reset Successful', 'All data has been reset to default values.');
-  //   } catch (e) {
-  //     console.error('Error resetting data:', e);
-  //     Alert.alert('Error', 'Failed to reset data.');
-  //   }
-  // };
-
   const isFocused = useIsFocused(); // Add this hook
   const { theme, toggleTheme } = useTheme();
   const [selectedHeader, setSelectedHeader] = useState<string | null>(null);
   const [points, setPoints] = useState(0);
   const [purchasedItems, setPurchasedItems] = useState<Record<string, boolean>>({});
   const [equippedThemeId, setEquippedThemeId] = useState(1);
+  const [level, setLevel] = useState(1); // Default to level 1
+  const [progress, setProgress] = useState(0); // Default to 0 progress
+  const [currencyMultiplier, setCurrencyMultiplier] = useState(1);
+  const [levelMultiplier, setLevelMultiplier] = useState(1);
 
   const updateGlobalPoints = async (newPoints: number) => {
     try {
@@ -147,7 +116,7 @@ export default function ShopScreen() {
 
   const headers = [
     { id: '1', label: 'Themes' },
-    { id: '2', label: 'Button' },
+    { id: '2', label: 'Upgrades' },
   ];
 
   const themes = [
@@ -156,11 +125,8 @@ export default function ShopScreen() {
     { id: 3, label: 'Cyber Punk', theme: cyberPunk },
   ];
 
-  console.log('Themes Array:', themes); // Debugging
-
   const getThemeById = (id: number) => {
     const theme = themes.find((theme) => theme.id === id);
-    console.log('Theme ID:', id, 'Theme:', theme); // Debugging
     return theme || themes[0]; // Fallback to the first theme
   };
 
@@ -194,18 +160,19 @@ export default function ShopScreen() {
           ))}
         </View>
       </View>
-
       {/* Scrollable additional content */}
       <ScrollView style={styles.scrollableContent}>
-        {/* Frame with image */}
+        {selectedHeader === '1' && (
+          
+          <View>
+                    {/* Frame with image */}
         <View style={styles.imageFrame}>
           <Image
             source={require('../../assets/images/runner_app_logo.png')}
             style={styles.image}
           />
         </View>
-
-        {/* Text and button row */}
+            {/* Text and button row */}
         <View style={styles.textButtonRow}>
           <TouchableOpacity
             style={[styles.button, { backgroundColor: getThemeById(1)?.theme.buttonBackground }]}
@@ -232,7 +199,7 @@ export default function ShopScreen() {
 
         {/* Second Text and button row */}
         <View style={styles.textButtonRow}>
-          {!purchasedItems.theme_2 && (
+          {!purchasedItems.purchased_theme_2 && (
           <Text style={[styles.text, { color: getThemeById(2)?.theme.text }]}>
             200 Points
           </Text>
@@ -268,7 +235,7 @@ export default function ShopScreen() {
 
         {/* Third Text and button row */}
         <View style={styles.textButtonRow}>
-          {!purchasedItems.theme_3 && (
+          {!purchasedItems.purchased_theme_3 && (
           <Text style={[styles.text, { color: getThemeById(3)?.theme.text }]}>
             500 Points
           </Text>
@@ -293,12 +260,66 @@ export default function ShopScreen() {
               </TouchableOpacity>
             )}
           </View>
+          </View>
+        )}
+        {selectedHeader === '2' && (
+          <View>
+    <View style={styles.container}>
+      <View style={styles.grid}>
+        {/* Currency Multiplier Box */}
+        <View style={styles.box}>
+          <Text>Currency Multiplier</Text>
+          <Button 
+            title="+" 
+            onPress={() => setCurrencyMultiplier(currencyMultiplier + 1)} 
+            color="#4CAF50" // Green button color (for example)
+          />
+          <Text>{currencyMultiplier}</Text> {/* Display current multiplier */}
+        </View>
+
+        {/* Level Multiplier Box */}
+        <View style={styles.box}>
+          <Text>Level Multiplier</Text>
+          <Button 
+            title="+" 
+            onPress={() => setLevelMultiplier(levelMultiplier + 1)} 
+            color="#FF5722" // Orange button color (for example)
+          />
+          <Text>{levelMultiplier}</Text> {/* Display current multiplier */}
+        </View>
+      </View>
+    </View>
+  </View>
+        )};
       </ScrollView>
 
       <View style={[styles.currencyContainer, { backgroundColor: theme.background }]}>
-        <Text style={[styles.currencyText, { color: theme.text }]}>
-          Points: {points}
-        </Text>
+        {/* Points Section */}
+        <View style={styles.pointsContainer}>
+          <Image 
+            source={require('../../assets/images/shoes.png')} // Replace with your actual image
+            style={styles.pointsIcon} 
+          />
+          <Text style={[styles.currencyText, { color: theme.text }]}>
+            {points}
+          </Text>
+        </View>
+
+        {/* Level Progress Bar Section */}
+        <View style={styles.levelContainer}>
+          <Progress.Bar
+            progress={progress} // Value between 0 and 1
+            width={150}
+            height={10}
+            borderRadius={5}
+            color="blue"
+            unfilledColor="#ddd"
+            borderWidth={0}
+          />
+          <Text style={[styles.levelText, { color: theme.text }]}>
+            Level {level}
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -310,15 +331,30 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 20,
+  },
+  picker: {
+    width: 150,
+    height: 50,
+  },
+  grid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  box: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    margin: 10,
   },
   headerButton: {
     position: 'relative',
     top: 30,
     padding: 10,
-    marginRight: 20,
-    borderRadius: 10,
+    marginRight: 10,
+    borderRadius: 25,
   },
   headerText: {
     fontSize: 16,
@@ -340,9 +376,28 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   currencyContainer: {
-    padding: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+  },
+  pointsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  pointsIcon: {
+    width: 35,
+    height: 35,
+    marginRight: 5,
+  },
+  levelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  levelText: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: "bold",
   },
   currencyText: {
     fontSize: 18,
@@ -378,4 +433,5 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
   },
+
 });
