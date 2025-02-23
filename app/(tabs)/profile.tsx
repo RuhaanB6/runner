@@ -30,10 +30,16 @@ const ProfileScreen = () => {
 
     // Updated points sync logic
     useEffect(() => {
-      const loadPoints = async () => {
+      const loadData = async () => {
         try {
           const pointsValue = await AsyncStorage.getItem('points');
+          const usernameValue = await AsyncStorage.getItem('username');
+          const firstnameValue = await AsyncStorage.getItem('firstName');
+          const lastnameValue = await AsyncStorage.getItem('lastName');
           setPoints(parseInt(pointsValue || '0', 10));
+          setUsername(usernameValue || "Username");
+          setFirstName(firstnameValue || "First");
+          setLastName(lastnameValue || "Last");
         } catch (e) {
           console.error('Error loading points:', e);
         }
@@ -41,7 +47,7 @@ const ProfileScreen = () => {
   
       // Load points when screen comes into focus
       if (isFocused) {
-        loadPoints();
+        loadData();
       }
     }, [isFocused]); // Add isFocused to dependencies
 
