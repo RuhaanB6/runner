@@ -1,25 +1,79 @@
-# Welcome to Momentive 🏃‍♂️
+# Momentive
 
-Momentive is an app that encourages both novice and expierienced runners alike to step their foot out the door and go for a run. With randomized routes, every run is different, and Momentive is the perfect app to spice up a stale running routine. Momentive caters to runners at every level by allowing you to run as short or long as you want to. With rewards after every completed run, users won't be able to resist coming back to Momentive and going for a run, day after day, building the routine of movement that is a cornerstone for a healthy lifestyle.
+## Inspiration
+We created Momentive to help users stay motivated through gamification and personalization. Inspired by productivity apps and habit trackers, we wanted to build a system that rewards progress while allowing users to express themselves through customizable themes. The dual focus on motivation and personalization drives our vision for an engaging user experience. The majority of our group comprises of past and present competitive and leisure runners. While they understand the joys and turmoils of running from the perspective of people who have been involved in the field, the other minority of the group understands the trek that the journey to a healthy running schedule looks like. Combining these insights, we wanted to develop something to make it easier for both parties.
 
-## Get started
+## What it does
+Momentive is a motivation-boosting app that:
+- Tracks user progress through a points system
+- Allows users to earn points and unlock premium themes
+- Provides a customizable profile with username and personal details
+- Features a shop where users can spend points to purchase themes
+- Maintains persistent storage of user data and purchases
+- Supports light/dark mode and custom theme selection
 
-1. Install dependencies
+Key Features:
+- **Profile Management:** Edit username, first/last name, and track points
+- **Points System:** Earn points through app engagement
+- **Theme Shop:** Purchase and apply new themes using earned points
+- **Persistent Storage:** All data is saved locally and persists between sessions
 
-   ```bash
-   npm install
-   ```
+## How we built it
+Momentive was built using:
+- **Frontend:** React Native with TypeScript
+- **State Management:** React hooks (useState, useEffect)
+- **Navigation:** React Navigation
+- **Persistence:** AsyncStorage for local data storage
+- **Theming:** Custom theme provider with light/dark mode support
+- **UI Components:** Custom-designed components with responsive layouts
 
-2. Start the app
+Technical Highlights:
+- Implemented bi-directional data synchronization between Profile and Shop
+- Developed atomic storage operations for reliable data persistence
+- Created a dynamic purchase system that supports future expansion
+- Built a theme engine supporting multiple color schemes
 
-   ```bash
-    npx expo start
-   ```
+## Challenges we ran into
+1. **Data Synchronization:** Ensuring real-time updates between Profile and Shop screens
+2. **State Management:** Handling complex state interactions between points and purchases
+3. **Persistence:** Maintaining data consistency across app restarts
+4. **Error Handling:** Implementing robust error recovery for storage operations
+5. **UI Consistency:** Maintaining visual coherence across different themes
 
-In the output, you'll find options to open the app in a
+## Accomplishments that we're proud of
+- Successfully implemented a reliable points system with bi-directional sync
+- Created an expandable theme shop with persistent purchase tracking
+- Developed a smooth user experience with instant feedback
+- Built a robust storage system that handles edge cases
+- Designed an intuitive UI that works across different themes
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## What we learned
+- Effective state management techniques in React Native
+- Best practices for local data persistence
+- Importance of atomic operations in data storage
+- How to create maintainable, expandable systems
+- Techniques for handling complex screen interactions
+- Value of proper error handling and user feedback
 
+## What's next for Momentive
+1. **Cloud Sync:** Implement cloud storage for cross-device synchronization
+2. **Achievement System:** Add badges and milestones for user accomplishments
+3. **Social Features:** Enable sharing progress with friends
+4. **More Customization:** Expand theme options and add profile pictures
+5. **Daily Challenges:** Implement daily tasks for bonus points
+6. **Analytics:** Add usage tracking to improve user experience
+7. **Accessibility:** Enhance accessibility features for wider user base
+8. **Monetization:** Explore premium features or ad-supported model
+
+## Getting Started
+To run Momentive locally:
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start the development server: `npm start`
+4. Run on your preferred platform: `npm run android` or `npm run ios`
+
+## Contributing
+We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+Momentive is released under the MIT License. See [LICENSE](LICENSE) for details.
