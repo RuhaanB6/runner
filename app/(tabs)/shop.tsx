@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { useTheme } from '../lib/theme/useTheme';
-import { mainTheme, darkTheme } from '../lib/theme/theme';
+import { mainTheme, darkTheme, cyberPunk } from '../lib/theme/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -9,6 +9,7 @@ import { useIsFocused } from '@react-navigation/native';
 const PURCHASABLE_ITEMS = [
   { id: 'theme_1', cost: 100, themeId: 1 },
   { id: 'theme_2', cost: 200, themeId: 2 },
+  { id: 'theme_3', cost: 500, themeId: 3 },
 ];
 
 export default function ShopScreen() {
@@ -25,9 +26,11 @@ export default function ShopScreen() {
   //     const defaultPurchasedItems = {
   //       theme_1: true, // Assuming theme_1 is the default and already purchased
   //       theme_2: false,
+  //       theme_3: false,
   //     };
   //     await AsyncStorage.setItem('purchased_theme_1', 'true');
   //     await AsyncStorage.setItem('purchased_theme_2', 'false');
+  //     await AsyncStorage.setItem('purchased_theme_3', 'false');
   //     setPurchasedItems(defaultPurchasedItems);
   
   //     // Reset equipped theme to default (theme_1)
@@ -120,11 +123,11 @@ export default function ShopScreen() {
         // Apply theme
         const purchasedTheme = getThemeById(themeId)?.theme;
         if (purchasedTheme) {
-          toggleTheme(purchasedTheme);
+          // toggleTheme(purchasedTheme);
           await AsyncStorage.setItem('selectedTheme', JSON.stringify(purchasedTheme));
         }
 
-        Alert.alert('Purchase Successful', 'Theme applied successfully!');
+        Alert.alert('Purchase Successful');
       } catch (e) {
         console.error('Purchase failed:', e);
         Alert.alert('Error', 'Failed to complete purchase');
@@ -150,13 +153,16 @@ export default function ShopScreen() {
   const themes = [
     { id: 1, label: 'Main Theme', theme: mainTheme },
     { id: 2, label: 'Dark Theme', theme: darkTheme },
+    { id: 3, label: 'Cyber Punk', theme: cyberPunk },
   ];
 
-  const getThemeById = (id: number) => {
-    return themes.find((theme) => theme.id === id);
-  };
+  console.log('Themes Array:', themes); // Debugging
 
-  const equippedTheme = getThemeById(1)?.theme;
+  const getThemeById = (id: number) => {
+    const theme = themes.find((theme) => theme.id === id);
+    console.log('Theme ID:', id, 'Theme:', theme); // Debugging
+    return theme || themes[0]; // Fallback to the first theme
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -246,6 +252,42 @@ export default function ShopScreen() {
                 onPress={() => handlePurchase('theme_2', 200, 2)}
               >
                 <Text style={[styles.buttonText, { color: getThemeById(2)?.theme.buttonText }]}>
+                  Buy
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Third Frame with image */}
+        <View style={styles.imageFrame}>
+          <Image
+            source={require('../../assets/images/cyberPunk.png')}
+            style={styles.image}
+          />
+        </View>
+
+        {/* Third Text and button row */}
+        <View style={styles.textButtonRow}>
+          {!purchasedItems.theme_3 && (
+          <Text style={[styles.text, { color: getThemeById(3)?.theme.text }]}>
+            500 Points
+          </Text>
+          )}
+          {purchasedItems.purchased_theme_3 ? (
+                <TouchableOpacity
+                style={[styles.button, { backgroundColor: getThemeById(3)?.theme.buttonBackground }]}
+                onPress={() => handleEquip(3)}
+              >
+                <Text style={[styles.buttonText, { color: getThemeById(3)?.theme.buttonText }]}>
+                  {equippedThemeId === 3 ? 'Equipped' : 'Equip'}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: getThemeById(3)?.theme.buttonBackground }]}
+                onPress={() => handlePurchase('theme_3', 500, 3)}
+              >
+                <Text style={[styles.buttonText, { color: getThemeById(3)?.theme.buttonText }]}>
                   Buy
                 </Text>
               </TouchableOpacity>

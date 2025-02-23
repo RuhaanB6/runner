@@ -19,3 +19,14 @@ export const darkTheme = {
   tabBarInactiveTintColor: '#1D1D1D',   
   shopbackground: '#050505',
 };
+
+export const cyberPunk = {
+  background: '#d600ff',
+  text: '#00ff9f',   
+  tabBarBackground: '#e600ff',
+  buttonBackground: '#001eff',  
+  buttonText: '#00ff9f',
+  tabBarActiveTintColor: '#00ff9f',
+  tabBarInactiveTintColor: '#d600ff',   
+  shopbackground: '#7e0096',
+};
