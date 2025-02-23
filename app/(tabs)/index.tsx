@@ -57,8 +57,6 @@ export default function Index(): JSX.Element {
   }
 
   ///////////
-  // State for the win visibility
-  const [isWinVisible, setIsWinVisible] = useState(false);
 
   // State for the loss visibility
   const [isLossVisible, setIsLossVisible] = useState(false);
@@ -66,11 +64,7 @@ export default function Index(): JSX.Element {
   const stopPressed = () => {
     openStart();
     closeStop();
-    if (completedChallenge) {
-      setIsWinVisible(true);
-    } else {
-      setIsLossVisible(true);
-    }
+    setIsLossVisible(true);
   }
   
   // Function to close the modal
@@ -89,9 +83,9 @@ export default function Index(): JSX.Element {
         {isStartVisible ? (<MaterialIcons name="play-arrow" size={30} color="white" />) : (<MaterialIcons name="stop" size={30} color="white" />)}
       </TouchableOpacity>
 
-      {/* Modal for succesful completion */}
+      {/* Modal for not a successful completion */}
       <Modal
-        visible={isWinVisible}
+        visible={isLossVisible}
       >
 
       </Modal>
