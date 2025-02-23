@@ -1,6 +1,6 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { mainTheme, darkTheme } from './theme';
+import { mainTheme, darkTheme, cyberPunk } from './theme';
 
 type Theme = typeof mainTheme;
 
