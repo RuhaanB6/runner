@@ -13,11 +13,45 @@ const PURCHASABLE_ITEMS = [
 
 export default function ShopScreen() {
 
+  // // reset data function only call in button !
+  
+  // const resetDataToDefault = async () => {
+  //   try {
+  //     // Reset points to 0
+  //     await AsyncStorage.setItem('points', '0');
+  //     setPoints(0);
+  
+  //     // Reset purchased items to default
+  //     const defaultPurchasedItems = {
+  //       theme_1: true, // Assuming theme_1 is the default and already purchased
+  //       theme_2: false,
+  //     };
+  //     await AsyncStorage.setItem('purchased_theme_1', 'true');
+  //     await AsyncStorage.setItem('purchased_theme_2', 'false');
+  //     setPurchasedItems(defaultPurchasedItems);
+  
+  //     // Reset equipped theme to default (theme_1)
+  //     setEquippedThemeId(1);
+  
+  //     // Optionally, apply the default theme
+  //     const defaultTheme = getThemeById(1)?.theme;
+  //     if (defaultTheme) {
+  //       toggleTheme(defaultTheme);
+  //     }
+  
+  //     Alert.alert('Reset Successful', 'All data has been reset to default values.');
+  //   } catch (e) {
+  //     console.error('Error resetting data:', e);
+  //     Alert.alert('Error', 'Failed to reset data.');
+  //   }
+  // };
+
   const isFocused = useIsFocused(); // Add this hook
   const { theme, toggleTheme } = useTheme();
   const [selectedHeader, setSelectedHeader] = useState<string | null>(null);
   const [points, setPoints] = useState(0);
   const [purchasedItems, setPurchasedItems] = useState<Record<string, boolean>>({});
+  const [equippedThemeId, setEquippedThemeId] = useState(1);
 
   const updateGlobalPoints = async (newPoints: number) => {
     try {
@@ -101,9 +135,10 @@ export default function ShopScreen() {
   };
 
   const handleEquip = (themeId: number) => {
-    const equippedTheme = getThemeById(themeId)?.theme;
-    if (equippedTheme) {
-      toggleTheme(equippedTheme);
+    setEquippedThemeId(themeId);
+    const themeToEquip = getThemeById(themeId)?.theme;
+    if (themeToEquip) {
+      toggleTheme(themeToEquip);
     }
   };
 
@@ -176,7 +211,7 @@ export default function ShopScreen() {
             }}
           >
             <Text style={[styles.buttonText, { color: getThemeById(1)?.theme.buttonText }]}>
-              {getThemeById(1)?.id === 1 ? 'Equipped' : 'Equip'}
+              {equippedThemeId === 1 ? 'Equipped' : 'Equip'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -191,24 +226,31 @@ export default function ShopScreen() {
 
         {/* Second Text and button row */}
         <View style={styles.textButtonRow}>
+          {!purchasedItems.theme_2 && (
           <Text style={[styles.text, { color: getThemeById(2)?.theme.text }]}>
             200 Points
           </Text>
-          {purchasedItems.purchased_theme_2 ? (
-            <Text style={[styles.buttonText, { color: getThemeById(2)?.theme.text }]}>
-              Purchased
-            </Text>
-          ) : (
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: getThemeById(2)?.theme.buttonBackground }]}
-              onPress={() => handlePurchase('theme_2', 200, 2)}
-            >
-              <Text style={[styles.buttonText, { color: getThemeById(2)?.theme.buttonText }]}>
-                Buy
-              </Text>
-            </TouchableOpacity>
           )}
-        </View>
+          {purchasedItems.purchased_theme_2 ? (
+                <TouchableOpacity
+                style={[styles.button, { backgroundColor: getThemeById(2)?.theme.buttonBackground }]}
+                onPress={() => handleEquip(2)}
+              >
+                <Text style={[styles.buttonText, { color: getThemeById(2)?.theme.buttonText }]}>
+                  {equippedThemeId === 2 ? 'Equipped' : 'Equip'}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: getThemeById(2)?.theme.buttonBackground }]}
+                onPress={() => handlePurchase('theme_2', 200, 2)}
+              >
+                <Text style={[styles.buttonText, { color: getThemeById(2)?.theme.buttonText }]}>
+                  Buy
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
       </ScrollView>
 
       <View style={[styles.currencyContainer, { backgroundColor: theme.background }]}>
