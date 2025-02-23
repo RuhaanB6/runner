@@ -136,8 +136,6 @@ export default function Map({ input_param, range }: { input_param: boolean; rang
     );
   }
 
-  console.log(`Destination coords: ${destination.latitude}, ${destination.longitude}`);
-
   return (
     <View style={styles.container}>
       {region && (
@@ -150,8 +148,6 @@ export default function Map({ input_param, range }: { input_param: boolean; rang
         >
           {range && (
             <>
-              {console.log("printing destination and route")}
-              {console.log(`Destination to be printed: ${destination.latitude}, ${destination.longitude}`)}
               <Marker
                 coordinate={destination}
                 title="Destination"

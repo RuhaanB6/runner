@@ -78,7 +78,6 @@ export default function Index(): JSX.Element {
   };
 
   const changeRange = () => {
-      console.log("button pressed");
       setRange(sliderState);
   };
   
