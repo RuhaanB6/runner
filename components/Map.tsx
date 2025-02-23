@@ -6,17 +6,8 @@ import axios from 'axios';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyDcwUsznAwu7dWDBPAozCSNx3ph3B4NhXI'; 
 
-export function getDestination( start_location: LatLng, range: number ):LatLng {
-  const randomNum = (Math.random() * 2) - 1;  // random number from -1 to 1
-  const random_latitude_value_miles = randomNum * range;
-  const sign = ((Math.random() < 0.5) ? -1 : 1);  // random sign, -1 or 1
-  const random_longitude_value_miles = sign * Math.sqrt((range ** 2) - (random_latitude_value_miles ** 2));
-  const new_destination_latitude = (start_location.latitude + (random_latitude_value_miles / 69));
-  const new_destination_longitude = (start_location.longitude + (random_longitude_value_miles / 52));
-  return { latitude: new_destination_latitude, longitude: new_destination_longitude};
-}
 
-export default function Map({ input_param, range, end_location }: {input_param: boolean, range?: number, end_location?:LatLng }) {
+export default function Map({ input_param, range}: {input_param: boolean, range?: number}) {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [region, setRegion] = useState<Region | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<{ latitude: number; longitude: number }[]>([]);
@@ -28,17 +19,21 @@ export default function Map({ input_param, range, end_location }: {input_param: 
 
     const fetchRoute = async (origin: { latitude: number; longitude: number }) => {
       try {
-        const destination_latitude = (end_location ? end_location.latitude : 0);
-        const destination_longitude = (end_location ? end_location.longitude : 0);
+        const randomNum = (Math.random() * 2) - 1;  // random number from -1 to 1
+        const random_latitude_value_miles = randomNum * (range? range : 0);
+        const sign = ((Math.random() < 0.5) ? -1 : 1);  // random sign, -1 or 1
+        const random_longitude_value_miles = sign * Math.sqrt(((range ? range : 0) ** 2) - (random_latitude_value_miles ** 2));
+        const new_destination_latitude = (origin.latitude + (random_latitude_value_miles / 69));
+        const new_destination_longitude = (origin.longitude + (random_longitude_value_miles / 52));
 
         setDestination({ 
-          latitude: destination_latitude, 
-          longitude: destination_longitude
+          latitude: new_destination_latitude, 
+          longitude: new_destination_longitude
         });
         console.log(`origin: ${origin.latitude}, ${origin.longitude}`);
-        console.log(`Destination: ${destination_latitude}, ${destination_longitude}`);
+        console.log(`Destination: ${new_destination_latitude}, ${new_destination_longitude}`);
         const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination_latitude},${destination_longitude}&mode=walking&key=${GOOGLE_MAPS_API_KEY}`
+          `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${new_destination_latitude},${new_destination_longitude}&mode=walking&key=${GOOGLE_MAPS_API_KEY}`
         );
         if (response.data.routes.length) {
           const points = decodePolyline(response.data.routes[0].overview_polyline.points);
@@ -76,7 +71,7 @@ export default function Map({ input_param, range, end_location }: {input_param: 
       setLoading(false);
 
       // Fetch route after setting location
-      if (range && end_location) {
+      if (range) {
         fetchRoute({
           latitude: userLocation.coords.latitude,
           longitude: userLocation.coords.longitude,
@@ -150,6 +145,8 @@ export default function Map({ input_param, range, end_location }: {input_param: 
         >
           {range && (
             <>
+              {console.log("printing destination and route")}
+              {console.log(`Destination to be printed: ${destination.latitude}, ${destination.longitude}`)}
               <Marker
                 coordinate={destination}
                 title="Destination"

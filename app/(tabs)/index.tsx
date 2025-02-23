@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons'; // Ensure this package is in
 import Map from '@/components/Map'; // Adjust the path if needed
 import { useTheme } from '../lib/theme/useTheme';  // Adjust the path as needed
 import Slider from "@react-native-community/slider" // Adding the community package for the slider
-import { getDestination } from '@/components/Map';
+import {LatLng} from 'react-native-maps';
 
 export default function Index(): JSX.Element {
   
@@ -17,6 +17,7 @@ export default function Index(): JSX.Element {
 
   const [range, setRange] = useState<number | undefined>(undefined);
 
+  const [destination, setDestination] = useState<LatLng | undefined>(undefined);
   // State for start button visibility
   const [isStartVisible, setIsStartVisible] = useState(true);
 
@@ -76,8 +77,9 @@ export default function Index(): JSX.Element {
     setIsModalVisible(false);
   };
 
-  const changeRange = (range:number) => {
-      setRange(range);
+  const changeRange = () => {
+      console.log("button pressed");
+      setRange(sliderState);
   };
   
 
@@ -124,13 +126,13 @@ export default function Index(): JSX.Element {
             {/* Confirm Button */}
             <TouchableOpacity
               style={[styles.themeButton, { backgroundColor: theme.buttonBackground }]}
-              onPress={() => console.log({sliderState})}
+              onPressIn={changeRange}
               >
               <Text style={[styles.themeButtonText, { color: theme.buttonText }]}>Confirm Distance</Text>
               </TouchableOpacity>
 
             {/* The Map */}
-            <Map input_param = {false}/>
+            <Map input_param = {false} range={range}/>
 
             {/* Making a row style for the start/cancel buttons*/}
             <View style={styles.textButtonRow}>
