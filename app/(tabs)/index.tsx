@@ -8,15 +8,51 @@ import Slider from "@react-native-community/slider" // Adding the community pack
 export default function Index(): JSX.Element {
   
   // State for sliderState
-  const [sliderState, setSliderState] = React.useState<number>(0);
+  const [sliderState, setSliderState] = React.useState<number>(0.25);
 
   // State for the modal visibility
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // State for start button visibility
+  const [isStartVisible, setIsStartVisible] = useState(true);
+
+  // State for stop button visibility
+  const [isStopVisible, setIsStopVisible] = useState(false);
+
+  // Function to make start visible
+  const openStart = () => {
+    setIsStartVisible(true);
+  }
+
+  // Function to make start invisible
+  const closeStart = () => {
+    setIsStartVisible(false);
+  }
+
+  // Function to make stop visible
+  const openStop = () => {
+    setIsStopVisible(true);
+  }
+
+  // Function to make start invisible
+  const closeStop = () => {
+    setIsStopVisible(false);
+  }
 
   // Function to open the modal
   const openModal = () => {
     setIsModalVisible(true);
   };
+
+  // Function to do when press-start is done
+  const startPressed = () => {
+    closeModal();
+    closeStart();
+    openStop();
+  }
+
+  const closePressed = () => {
+  }
   
   // Function to close the modal
   const closeModal = () => {
@@ -28,10 +64,10 @@ export default function Index(): JSX.Element {
     <View style={styles.container}>
       <Map input_param={true}/>
       <TouchableOpacity
-        style={[styles.startButton, { backgroundColor: theme.buttonBackground }]}
-        onPress={openModal}
+        style={[isStartVisible ? styles.startButton : styles.startButtonDiss, { backgroundColor: theme.buttonBackground }]}
+        onPress={isStartVisible ? openModal : closePressed}
       >
-        <MaterialIcons name="play-arrow" size={30} color="white" />
+        {isStartVisible ? (<MaterialIcons name="play-arrow" size={30} color="white" />) : (<MaterialIcons name="stop" size={30} color="white" />)}
       </TouchableOpacity>
 
       {/* Modal for Changing Profile */}
@@ -72,7 +108,7 @@ export default function Index(): JSX.Element {
               {/* Cancel Button */}
               <Button title="Cancel" onPress={closeModal} color="red" />
               {/* Start Button */}
-              <Button title="Start" onPress={() => console.log("Pressed Start")} />
+              <Button title="Start" onPress={startPressed} />
             </View>
           </View>
         </View>
@@ -89,6 +125,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   startButton: {
+    position: 'absolute',
+    bottom: 30,
+    alignSelf: 'center',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  startButtonDiss: {
     position: 'absolute',
     bottom: 30,
     alignSelf: 'center',
