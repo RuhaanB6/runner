@@ -5,8 +5,14 @@ import { mainTheme, darkTheme } from '../lib/theme/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
+// Array/Dictionary to store all the arrays
+const PURCHASABLE_ITEMS = [
+  { id: 'theme_1', cost: 100, themeId: 1 },
+  { id: 'theme_2', cost: 200, themeId: 2 },
+];
 
 export default function ShopScreen() {
+
   const isFocused = useIsFocused(); // Add this hook
   const { theme, toggleTheme } = useTheme();
   const [selectedHeader, setSelectedHeader] = useState<string | null>(null);
@@ -23,49 +29,74 @@ export default function ShopScreen() {
     }
   };
   
+  // Modified useEffect
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Load points
         const pointsStr = await AsyncStorage.getItem('points');
         setPoints(parseInt(pointsStr || '0', 10));
-        
-        // Rest of purchase status loading...
+
+        // Dynamically load purchase status for all items
+        const purchaseStatus = await Promise.all(
+          PURCHASABLE_ITEMS.map(async (item) => {
+            const value = await AsyncStorage.getItem(`purchased_${item.id}`);
+            return { [`purchased_${item.id}`]: value === 'true' };
+          })
+        );
+      
+        setPurchasedItems(Object.assign({}, ...purchaseStatus));
       } catch (e) {
         console.error('Error fetching data:', e);
       }
     };
 
-    if (isFocused) { // Only run when screen is focused
+    if (isFocused) {
       fetchData();
     }
-  }, [isFocused]); // Add isFocused to dependencies
+  }, [isFocused]);
 
-  // Fixed handlePurchase
+  // Updated handlePurchase function
   const handlePurchase = async (itemId: string, cost: number, themeId: number) => {
+    const purchaseKey = `purchased_${itemId}`;
+
+    // Check if already purchased
+    if (purchasedItems[purchaseKey]) {
+      Alert.alert('Already Owned', 'You already purchased this theme!');
+      return;
+    }
+
     if (points >= cost) {
       try {
         const newPoints = points - cost;
-        await updateGlobalPoints(newPoints); // Use the new atomic updater
-        
-        // Update storage FIRST
-        await AsyncStorage.setItem('points', newPoints.toString());
+      
+        // Atomic update sequence
+        await AsyncStorage.multiSet([
+          ['points', newPoints.toString()],
+          [purchaseKey, 'true']
+        ]);
+
+        // Update local state
         setPoints(newPoints);
+        setPurchasedItems(prev => ({
+          ...prev,
+          [purchaseKey]: true
+        }));
 
-        await AsyncStorage.setItem(`purchased_${itemId}`, 'true');
-        setPurchasedItems((prev) => ({ ...prev, [`purchased_${itemId}`]: true }));
-
+        // Apply theme
         const purchasedTheme = getThemeById(themeId)?.theme;
         if (purchasedTheme) {
           toggleTheme(purchasedTheme);
+          await AsyncStorage.setItem('selectedTheme', JSON.stringify(purchasedTheme));
         }
 
-        Alert.alert('Purchase Successful', 'You have purchased the item!');
+        Alert.alert('Purchase Successful', 'Theme applied successfully!');
       } catch (e) {
-        console.error('Error saving data:', e);
-        Alert.alert('Error', 'Failed to save data.');
+        console.error('Purchase failed:', e);
+        Alert.alert('Error', 'Failed to complete purchase');
       }
     } else {
-      Alert.alert('Not Enough Points', 'You do not have enough points.');
+      Alert.alert('Insufficient Points', `You need ${cost - points} more points`);
     }
   };
 
