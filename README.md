@@ -75,4 +75,5 @@ To run Momentive locally:
 2. Install dependencies: `npm install`
 3. Start the development server: `npm start`
 4. Run on your preferred platform: `npm run android` or `npm run ios`
+
 ** NOTE: Need Node.JS installed to use `npm` **
